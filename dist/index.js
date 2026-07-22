@@ -21,6 +21,7 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 // src/index.ts
 var index_exports = {};
 __export(index_exports, {
+  AppSwitcher: () => AppSwitcher,
   Badge: () => Badge,
   Button: () => Button,
   Card: () => Card,
@@ -56,6 +57,10 @@ __export(index_exports, {
   SelectTrigger: () => SelectTrigger,
   SelectValue: () => SelectValue,
   Separator: () => Separator,
+  SidebarBrandSelector: () => SidebarBrandSelector,
+  SidebarNavItem: () => SidebarNavItem,
+  SidebarNavSection: () => SidebarNavSection,
+  SidebarShell: () => SidebarShell,
   Skeleton: () => Skeleton,
   Tabs: () => Tabs,
   TabsContent: () => TabsContent,
@@ -692,10 +697,187 @@ function Separator({
   );
 }
 
-// src/components/skeleton.tsx
+// src/components/sidebar-app-switcher.tsx
 var import_jsx_runtime9 = require("react/jsx-runtime");
+function DefaultSystemIcon() {
+  return /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)(
+    "svg",
+    {
+      viewBox: "0 0 24 24",
+      fill: "none",
+      "aria-hidden": "true",
+      className: "size-4",
+      children: [
+        /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("rect", { x: "3", y: "3", width: "7", height: "7", rx: "1.5", stroke: "currentColor", strokeWidth: "1.5" }),
+        /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("rect", { x: "14", y: "3", width: "7", height: "7", rx: "1.5", stroke: "currentColor", strokeWidth: "1.5" }),
+        /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("rect", { x: "3", y: "14", width: "7", height: "7", rx: "1.5", stroke: "currentColor", strokeWidth: "1.5" }),
+        /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("rect", { x: "14", y: "14", width: "7", height: "7", rx: "1.5", stroke: "currentColor", strokeWidth: "1.5" })
+      ]
+    }
+  );
+}
+function ChevronDownIcon2({ className }) {
+  return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("svg", { viewBox: "0 0 24 24", fill: "none", "aria-hidden": "true", className, children: /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("path", { d: "M6 9l6 6 6-6", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }) });
+}
+function AppSwitcher({
+  appName,
+  systems,
+  systemIcons,
+  loading,
+  className
+}) {
+  return /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)(Popover, { children: [
+    /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)(
+      PopoverTrigger,
+      {
+        className: cn(
+          "flex w-full items-center justify-between gap-2 rounded-lg px-2 py-2 text-left transition-colors hover:bg-sidebar-accent/50",
+          className
+        ),
+        children: [
+          /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("div", { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("p", { className: "text-xl font-semibold text-foreground", children: appName }),
+            /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("p", { className: "text-sm text-primary", children: "by Sai Creative" })
+          ] }),
+          /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(ChevronDownIcon2, { className: "size-4 shrink-0 text-muted-foreground" })
+        ]
+      }
+    ),
+    /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)(PopoverContent, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("p", { className: "px-2 py-1.5 text-xs font-medium text-muted-foreground", children: "Produtos e apps" }),
+      loading ? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("p", { className: "px-2 py-1.5 text-sm text-muted-foreground", children: "Carregando\u2026" }) : systems.map((system) => {
+        const icon = systemIcons?.[system.key] ?? /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(DefaultSystemIcon, {});
+        const itemContent = /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)(import_jsx_runtime9.Fragment, { children: [
+          /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("span", { className: "flex size-9 shrink-0 items-center justify-center rounded-md bg-muted text-foreground", children: icon }),
+          /* @__PURE__ */ (0, import_jsx_runtime9.jsxs)("span", { className: "flex flex-col", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("span", { className: "text-sm font-medium text-foreground", children: system.label }),
+            !system.url && /* @__PURE__ */ (0, import_jsx_runtime9.jsx)("span", { className: "text-xs text-muted-foreground", children: "Em breve" })
+          ] })
+        ] });
+        if (!system.url) {
+          return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
+            "div",
+            {
+              "aria-disabled": "true",
+              className: "flex cursor-not-allowed items-center gap-3 rounded-md px-2 py-2 opacity-50",
+              children: itemContent
+            },
+            system.key
+          );
+        }
+        return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
+          "a",
+          {
+            href: system.url,
+            className: "flex items-center gap-3 rounded-md px-2 py-2 transition-colors hover:bg-accent",
+            children: itemContent
+          },
+          system.key
+        );
+      })
+    ] })
+  ] });
+}
+
+// src/components/sidebar-brand-selector.tsx
+var import_jsx_runtime10 = require("react/jsx-runtime");
+function SidebarBrandSelector({
+  brands,
+  selectedBrandId,
+  onSelect,
+  loading,
+  footer,
+  renderBrandExtra,
+  className
+}) {
+  const selectedBrand = brands.find((brand) => brand.id === selectedBrandId);
+  return /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(
+    Select,
+    {
+      value: selectedBrandId ?? "",
+      onValueChange: (value) => onSelect(value),
+      children: [
+        /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(SelectTrigger, { className: cn("!h-auto w-full gap-3 !px-3 !py-2.5", className), children: [
+          /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("div", { className: "size-9 shrink-0 rounded-md bg-muted" }),
+          /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("div", { className: "flex min-w-0 flex-1 flex-col items-start", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("span", { className: "text-xs text-muted-foreground", children: "Perfil" }),
+            /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("span", { className: "w-full truncate text-left text-base font-semibold text-foreground", children: loading ? "Carregando\u2026" : selectedBrand?.name ?? "Selecione uma marca" })
+          ] })
+        ] }),
+        /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(SelectContent, { children: [
+          brands.map((brand) => /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(SelectItem, { value: brand.id, children: /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("span", { className: "flex w-full flex-1 items-center justify-between gap-2", children: [
+            /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("span", { className: "truncate", children: brand.name }),
+            renderBrandExtra?.(brand)
+          ] }) }, brand.id)),
+          footer
+        ] })
+      ]
+    }
+  );
+}
+
+// src/components/sidebar-nav.tsx
+var import_jsx_runtime11 = require("react/jsx-runtime");
+function SidebarNavItem({
+  href,
+  label,
+  icon,
+  active,
+  disabled,
+  statusIndicator,
+  onClick,
+  className
+}) {
+  return /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)(
+    "a",
+    {
+      href: disabled ? void 0 : href,
+      "aria-current": active ? "page" : void 0,
+      "aria-disabled": disabled || void 0,
+      onClick: disabled ? void 0 : onClick,
+      className: cn(
+        "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+        active ? "bg-sidebar-accent text-sidebar-accent-foreground" : "text-muted-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground",
+        disabled && "pointer-events-none cursor-not-allowed opacity-50",
+        className
+      ),
+      children: [
+        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("span", { className: "flex size-4 shrink-0 items-center justify-center [&_svg]:size-4", children: icon }),
+        /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("span", { className: "flex-1 truncate", children: label }),
+        statusIndicator
+      ]
+    }
+  );
+}
+function SidebarNavSection({ label, children, className }) {
+  return /* @__PURE__ */ (0, import_jsx_runtime11.jsxs)("div", { className: cn("flex flex-col gap-1 px-4 py-4", className), children: [
+    label && /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("p", { className: "px-3 pb-1 text-xs font-medium tracking-wide text-muted-foreground uppercase", children: label }),
+    /* @__PURE__ */ (0, import_jsx_runtime11.jsx)("nav", { className: "flex flex-col gap-1", children })
+  ] });
+}
+
+// src/components/sidebar-shell.tsx
+var import_jsx_runtime12 = require("react/jsx-runtime");
+function SidebarShell({ children, footer, className }) {
+  return /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(
+    "aside",
+    {
+      className: cn(
+        "flex w-64 shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground",
+        className
+      ),
+      children: [
+        /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { className: "flex-1 overflow-y-auto", children }),
+        footer && /* @__PURE__ */ (0, import_jsx_runtime12.jsx)("div", { className: "border-t border-sidebar-border", children: footer })
+      ]
+    }
+  );
+}
+
+// src/components/skeleton.tsx
+var import_jsx_runtime13 = require("react/jsx-runtime");
 function Skeleton({ className, ...props }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime9.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime13.jsx)(
     "div",
     {
       "data-slot": "skeleton",
@@ -709,20 +891,20 @@ function Skeleton({ className, ...props }) {
 var import_next_themes = require("next-themes");
 var import_sonner = require("sonner");
 var import_lucide_react4 = require("lucide-react");
-var import_jsx_runtime10 = require("react/jsx-runtime");
+var import_jsx_runtime14 = require("react/jsx-runtime");
 var Toaster = ({ ...props }) => {
   const { theme = "system" } = (0, import_next_themes.useTheme)();
-  return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(
     import_sonner.Toaster,
     {
       theme,
       className: "toaster group",
       icons: {
-        success: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_lucide_react4.CircleCheckIcon, { className: "size-4" }),
-        info: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_lucide_react4.InfoIcon, { className: "size-4" }),
-        warning: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_lucide_react4.TriangleAlertIcon, { className: "size-4" }),
-        error: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_lucide_react4.OctagonXIcon, { className: "size-4" }),
-        loading: /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(import_lucide_react4.Loader2Icon, { className: "size-4 animate-spin" })
+        success: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(import_lucide_react4.CircleCheckIcon, { className: "size-4" }),
+        info: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(import_lucide_react4.InfoIcon, { className: "size-4" }),
+        warning: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(import_lucide_react4.TriangleAlertIcon, { className: "size-4" }),
+        error: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(import_lucide_react4.OctagonXIcon, { className: "size-4" }),
+        loading: /* @__PURE__ */ (0, import_jsx_runtime14.jsx)(import_lucide_react4.Loader2Icon, { className: "size-4 animate-spin" })
       },
       style: {
         "--normal-bg": "var(--popover)",
@@ -743,13 +925,13 @@ var Toaster = ({ ...props }) => {
 // src/components/tabs.tsx
 var import_tabs = require("@base-ui/react/tabs");
 var import_class_variance_authority3 = require("class-variance-authority");
-var import_jsx_runtime11 = require("react/jsx-runtime");
+var import_jsx_runtime15 = require("react/jsx-runtime");
 function Tabs({
   className,
   orientation = "horizontal",
   ...props
 }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
     import_tabs.Tabs.Root,
     {
       "data-slot": "tabs",
@@ -781,7 +963,7 @@ function TabsList({
   variant = "default",
   ...props
 }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
     import_tabs.Tabs.List,
     {
       "data-slot": "tabs-list",
@@ -792,7 +974,7 @@ function TabsList({
   );
 }
 function TabsTrigger({ className, ...props }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
     import_tabs.Tabs.Tab,
     {
       "data-slot": "tabs-trigger",
@@ -808,7 +990,7 @@ function TabsTrigger({ className, ...props }) {
   );
 }
 function TabsContent({ className, ...props }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime11.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime15.jsx)(
     import_tabs.Tabs.Panel,
     {
       "data-slot": "tabs-content",
@@ -819,9 +1001,9 @@ function TabsContent({ className, ...props }) {
 }
 
 // src/components/textarea.tsx
-var import_jsx_runtime12 = require("react/jsx-runtime");
+var import_jsx_runtime16 = require("react/jsx-runtime");
 function Textarea({ className, ...props }) {
-  return /* @__PURE__ */ (0, import_jsx_runtime12.jsx)(
+  return /* @__PURE__ */ (0, import_jsx_runtime16.jsx)(
     "textarea",
     {
       "data-slot": "textarea",
@@ -835,6 +1017,7 @@ function Textarea({ className, ...props }) {
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
+  AppSwitcher,
   Badge,
   Button,
   Card,
@@ -870,6 +1053,10 @@ function Textarea({ className, ...props }) {
   SelectTrigger,
   SelectValue,
   Separator,
+  SidebarBrandSelector,
+  SidebarNavItem,
+  SidebarNavSection,
+  SidebarShell,
   Skeleton,
   Tabs,
   TabsContent,

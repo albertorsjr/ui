@@ -72,6 +72,97 @@ declare function SelectScrollDownButton({ className, ...props }: React$1.Compone
 
 declare function Separator({ className, orientation, ...props }: Separator$1.Props): React$1.JSX.Element;
 
+/** Linha do catálogo compartilhado `systems` (RLS já filtra pelo que o usuário logado pode acessar). */
+interface SystemEntry {
+    key: string;
+    label: string;
+    url: string | null;
+}
+interface AppSwitcherProps {
+    /** Nome do app atual, ex.: "Brand System", "Image System". */
+    appName: string;
+    /** Catálogo de apps já filtrado por quem chama (RLS). */
+    systems: SystemEntry[];
+    /** Ícone por `system.key`. Chave desconhecida cai no ícone genérico (grid). */
+    systemIcons?: Record<string, React$1.ReactNode>;
+    loading?: boolean;
+    className?: string;
+}
+/**
+ * Cabeçalho de sidebar com nome do app + troca entre sistemas do ecossistema
+ * Sai Creative System. Padrão oficial extraído do imagesystem
+ * ((dashboard)/layout.tsx) — ver ui/SIDEBAR_PATTERN.md.
+ */
+declare function AppSwitcher({ appName, systems, systemIcons, loading, className, }: AppSwitcherProps): React$1.JSX.Element;
+
+interface BrandOption {
+    id: string;
+    name: string;
+}
+interface SidebarBrandSelectorProps {
+    brands: BrandOption[];
+    selectedBrandId: string | null;
+    onSelect: (id: string) => void;
+    loading?: boolean;
+    /** Slot abaixo da lista de marcas, ex.: brandsystem usa "+ Nova marca" (admin-only). */
+    footer?: React$1.ReactNode;
+    /** Slot por item, ex.: botão de excluir marca (admin-only). Renderizado dentro do
+     *  item selecionável — se o conteúdo tiver seu próprio onClick, chame
+     *  `event.stopPropagation()` nele para não disparar a seleção da marca junto. */
+    renderBrandExtra?: (brand: BrandOption) => React$1.ReactNode;
+    className?: string;
+}
+/**
+ * Seletor de marca/perfil da sidebar. Visual replicado exatamente do que já
+ * existia em imagesystem/(dashboard)/layout.tsx (~linhas 244-263) — ver
+ * ui/SIDEBAR_PATTERN.md para a composição completa de sidebar.
+ */
+declare function SidebarBrandSelector({ brands, selectedBrandId, onSelect, loading, footer, renderBrandExtra, className, }: SidebarBrandSelectorProps): React$1.JSX.Element;
+
+interface SidebarNavItemProps {
+    href: string;
+    label: string;
+    /** Ícone já renderizado — o pacote não importa lib de ícone aqui; cada app
+     *  passa o seu (lucide-react, SVG inline etc.). */
+    icon: React$1.ReactNode;
+    active: boolean;
+    disabled?: boolean;
+    /** Ex.: checkmark verde de "validado". Opcional, renderizado à direita do label. */
+    statusIndicator?: React$1.ReactNode;
+    /** Ex.: fechar menu mobile ao navegar. Opcional. */
+    onClick?: () => void;
+    className?: string;
+}
+/**
+ * Item de navegação da sidebar. Usa `<a>` simples — o pacote não depende de
+ * Next.js; se o app consumidor quiser client-side routing (next/link), ele
+ * troca por seu próprio wrapper (essa é uma limitação documentada, ver
+ * ui/SIDEBAR_PATTERN.md). Estado ativo usa só tokens semânticos, nunca cores
+ * hardcoded.
+ */
+declare function SidebarNavItem({ href, label, icon, active, disabled, statusIndicator, onClick, className, }: SidebarNavItemProps): React$1.JSX.Element;
+interface SidebarNavSectionProps {
+    /** Eyebrow tipo "BIBLIOTECA". Opcional. */
+    label?: string;
+    children: React$1.ReactNode;
+    className?: string;
+}
+/** Agrupa `SidebarNavItem`s sob um rótulo opcional (seção da sidebar). */
+declare function SidebarNavSection({ label, children, className }: SidebarNavSectionProps): React$1.JSX.Element;
+
+interface SidebarShellProps {
+    children: React$1.ReactNode;
+    /** Fixo embaixo, ex.: info do usuário + logout. */
+    footer?: React$1.ReactNode;
+    className?: string;
+}
+/**
+ * Casca da sidebar: largura fixa, cores via tokens `--sidebar*`, conteúdo
+ * rolável e footer fixo. Ver ui/SIDEBAR_PATTERN.md para a composição completa
+ * (AppSwitcher, SidebarBrandSelector, SidebarNavSection/SidebarNavItem).
+ */
+declare function SidebarShell({ children, footer, className }: SidebarShellProps): React$1.JSX.Element;
+
 declare function Skeleton({ className, ...props }: React.ComponentProps<"div">): React$1.JSX.Element;
 
 declare const Toaster: ({ ...props }: ToasterProps) => React$1.JSX.Element;
@@ -88,4 +179,4 @@ declare function Textarea({ className, ...props }: React$1.ComponentProps<"texta
 
 declare function cn(...inputs: ClassValue[]): string;
 
-export { Badge, Button, Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, Input, Label, Popover, PopoverContent, PopoverTrigger, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, SelectValue, Separator, Skeleton, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, Toaster, badgeVariants, buttonVariants, cn, tabsListVariants };
+export { AppSwitcher, type AppSwitcherProps, Badge, type BrandOption, Button, Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, Input, Label, Popover, PopoverContent, PopoverTrigger, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, SelectValue, Separator, SidebarBrandSelector, type SidebarBrandSelectorProps, SidebarNavItem, type SidebarNavItemProps, SidebarNavSection, type SidebarNavSectionProps, SidebarShell, type SidebarShellProps, Skeleton, type SystemEntry, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, Toaster, badgeVariants, buttonVariants, cn, tabsListVariants };
