@@ -3,12 +3,15 @@ import * as class_variance_authority_types from 'class-variance-authority/types'
 import { useRender } from '@base-ui/react/use-render';
 import { VariantProps } from 'class-variance-authority';
 import { Button as Button$1 } from '@base-ui/react/button';
+import { Checkbox as Checkbox$1 } from '@base-ui/react/checkbox';
 import { Dialog as Dialog$1 } from '@base-ui/react/dialog';
 import { Popover as Popover$1 } from '@base-ui/react/popover';
 import { Select as Select$1 } from '@base-ui/react/select';
 import { Separator as Separator$1 } from '@base-ui/react/separator';
 import { ToasterProps } from 'sonner';
+export { toast } from 'sonner';
 import { Tabs as Tabs$1 } from '@base-ui/react/tabs';
+import { ThemeProviderProps } from 'next-themes';
 import { ClassValue } from 'clsx';
 
 declare const badgeVariants: (props?: ({
@@ -34,6 +37,8 @@ declare function CardAction({ className, ...props }: React$1.ComponentProps<"div
 declare function CardContent({ className, ...props }: React$1.ComponentProps<"div">): React$1.JSX.Element;
 declare function CardFooter({ className, ...props }: React$1.ComponentProps<"div">): React$1.JSX.Element;
 
+declare function Checkbox({ className, ...props }: Checkbox$1.Root.Props): React$1.JSX.Element;
+
 declare function Dialog({ ...props }: Dialog$1.Root.Props): React$1.JSX.Element;
 declare function DialogTrigger({ ...props }: Dialog$1.Trigger.Props): React$1.JSX.Element;
 declare function DialogPortal({ ...props }: Dialog$1.Portal.Props): React$1.JSX.Element;
@@ -57,7 +62,7 @@ declare function Popover({ ...props }: Popover$1.Root.Props): React$1.JSX.Elemen
 declare function PopoverTrigger({ ...props }: Popover$1.Trigger.Props): React$1.JSX.Element;
 declare function PopoverContent({ className, side, sideOffset, align, alignOffset, ...props }: Popover$1.Popup.Props & Pick<Popover$1.Positioner.Props, "align" | "alignOffset" | "side" | "sideOffset">): React$1.JSX.Element;
 
-declare const Select: typeof Select$1.Root;
+declare function Select({ children, ...props }: Select$1.Root.Props<any>): React$1.JSX.Element;
 declare function SelectGroup({ className, ...props }: Select$1.Group.Props): React$1.JSX.Element;
 declare function SelectValue({ className, ...props }: Select$1.Value.Props): React$1.JSX.Element;
 declare function SelectTrigger({ className, size, children, ...props }: Select$1.Trigger.Props & {
@@ -98,6 +103,8 @@ declare function AppSwitcher({ appName, systems, systemIcons, loading, className
 interface BrandOption {
     id: string;
     name: string;
+    /** Pictograma da marca — exibido no quadrado 36x36 (size-9) do trigger e de cada item. */
+    logoUrl?: string | null;
 }
 interface SidebarBrandSelectorProps {
     brands: BrandOption[];
@@ -106,16 +113,22 @@ interface SidebarBrandSelectorProps {
     loading?: boolean;
     /** Slot abaixo da lista de marcas, ex.: brandsystem usa "+ Nova marca" (admin-only). */
     footer?: React$1.ReactNode;
-    /** Slot por item, ex.: botão de excluir marca (admin-only). Renderizado dentro do
-     *  item selecionável — se o conteúdo tiver seu próprio onClick, chame
-     *  `event.stopPropagation()` nele para não disparar a seleção da marca junto. */
+    /** Slot por item, ex.: botão de excluir marca (admin-only). Renderizado como irmão
+     *  interativo do item (não mais aninhado dentro de um option de <select>) — se o
+     *  conteúdo tiver seu próprio onClick, chame `event.stopPropagation()` nele para não
+     *  disparar a seleção da marca junto. */
     renderBrandExtra?: (brand: BrandOption) => React$1.ReactNode;
     className?: string;
 }
 /**
- * Seletor de marca/perfil da sidebar. Visual replicado exatamente do que já
- * existia em imagesystem/(dashboard)/layout.tsx (~linhas 244-263) — ver
- * ui/SIDEBAR_PATTERN.md para a composição completa de sidebar.
+ * Seletor de marca/perfil da sidebar. Segue o mesmo padrão de popover (não
+ * mais um <select> nativo via @base-ui/react/select) do AppSwitcher — abre
+ * ABAIXO do trigger em vez de sobrepor a marca selecionada, e cada item é um
+ * <div> comum em vez de um option de listbox, o que permite conteúdo
+ * interativo aninhado (ex.: o botão de excluir de renderBrandExtra) sem
+ * ficar escondido/quebrado pelas regras de acessibilidade de <select>.
+ * Tamanho do quadrado do pictograma (size-9) mantido igual ao ícone de
+ * sistema do AppSwitcher, pra consistência visual entre os dois seletores.
  */
 declare function SidebarBrandSelector({ brands, selectedBrandId, onSelect, loading, footer, renderBrandExtra, className, }: SidebarBrandSelectorProps): React$1.JSX.Element;
 
@@ -163,6 +176,22 @@ interface SidebarShellProps {
  */
 declare function SidebarShell({ children, footer, className }: SidebarShellProps): React$1.JSX.Element;
 
+interface SidebarUserFooterProps {
+    /** E-mail do usuário logado. Quando ausente/vazio, só o avatar some (toggle de tema e "Sair" continuam). */
+    email?: string | null;
+    /** Papel do usuário (ex.: "admin"), exibido abaixo do e-mail. Omita em apps single-role (ex.: briefingsystem). */
+    role?: string | null;
+    onLogout: () => void;
+    className?: string;
+}
+/**
+ * Rodapé padrão da sidebar (prop `footer` de `SidebarShell`) — avatar com
+ * iniciais do e-mail, e-mail, papel opcional, toggle de tema, e "Sair". Ver
+ * ui/SIDEBAR_PATTERN.md. O `ThemeToggle` só funciona se o app tiver
+ * `<ThemeProvider>` montado acima na árvore (theme-provider.tsx).
+ */
+declare function SidebarUserFooter({ email, role, onLogout, className }: SidebarUserFooterProps): React$1.JSX.Element;
+
 declare function Skeleton({ className, ...props }: React.ComponentProps<"div">): React$1.JSX.Element;
 
 declare const Toaster: ({ ...props }: ToasterProps) => React$1.JSX.Element;
@@ -177,6 +206,31 @@ declare function TabsContent({ className, ...props }: Tabs$1.Panel.Props): React
 
 declare function Textarea({ className, ...props }: React$1.ComponentProps<"textarea">): React$1.JSX.Element;
 
+/**
+ * Fina camada sobre `next-themes` com os defaults do ecossistema já
+ * aplicados: `attribute="class"` (bate com `.dark` em `styles.css`),
+ * `defaultTheme="dark"` (identidade visual atual, preservada até o usuário
+ * trocar manualmente) e `enableSystem={false}` (troca é sempre explícita via
+ * `ThemeToggle`, não segue o SO). Qualquer prop pode ser sobrescrita pelo app
+ * consumidor.
+ */
+declare function ThemeProvider({ children, ...props }: ThemeProviderProps): React$1.JSX.Element;
+
+interface ThemeToggleProps {
+    className?: string;
+}
+/**
+ * Botão de alternar tema (ícone sol/lua). Depende de `<ThemeProvider>` estar
+ * montado acima na árvore (theme-provider.tsx) — sem ele, `useTheme()` não
+ * tem contexto e o clique não faz nada.
+ *
+ * `mounted` evita mismatch de hidratação: `resolvedTheme` só existe depois
+ * do next-themes ler `localStorage` no client, então o ícone real só é
+ * renderizado após o primeiro efeito — no SSR/primeira pintura, um botão
+ * neutro (desabilitado) ocupa o lugar.
+ */
+declare function ThemeToggle({ className }: ThemeToggleProps): React$1.JSX.Element;
+
 declare function cn(...inputs: ClassValue[]): string;
 
-export { AppSwitcher, type AppSwitcherProps, Badge, type BrandOption, Button, Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, Input, Label, Popover, PopoverContent, PopoverTrigger, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, SelectValue, Separator, SidebarBrandSelector, type SidebarBrandSelectorProps, SidebarNavItem, type SidebarNavItemProps, SidebarNavSection, type SidebarNavSectionProps, SidebarShell, type SidebarShellProps, Skeleton, type SystemEntry, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, Toaster, badgeVariants, buttonVariants, cn, tabsListVariants };
+export { AppSwitcher, type AppSwitcherProps, Badge, type BrandOption, Button, Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Checkbox, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, Input, Label, Popover, PopoverContent, PopoverTrigger, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, SelectValue, Separator, SidebarBrandSelector, type SidebarBrandSelectorProps, SidebarNavItem, type SidebarNavItemProps, SidebarNavSection, type SidebarNavSectionProps, SidebarShell, type SidebarShellProps, SidebarUserFooter, type SidebarUserFooterProps, Skeleton, type SystemEntry, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, ThemeProvider, ThemeToggle, type ThemeToggleProps, Toaster, badgeVariants, buttonVariants, cn, tabsListVariants };

@@ -45,6 +45,8 @@
   --color-card: var(--card);
   --color-success-foreground: var(--success-foreground);
   --color-success: var(--success);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning: var(--warning);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -61,8 +63,8 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.511 0.262 276.966); /* indigo-600 — mesma cor do dark mode, era preto genérico do shadcn antes */
+  --primary-foreground: oklch(1 0 0); /* white */
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
@@ -72,7 +74,7 @@
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --ring: oklch(0.585 0.233 277.117); /* indigo-500, mesma cor do dark mode */
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
@@ -81,21 +83,24 @@
   --radius: 0.75rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.511 0.262 276.966); /* indigo-600, mesma cor do dark mode */
+  --sidebar-primary-foreground: oklch(1 0 0); /* white */
   --sidebar-accent: oklch(0.97 0 0);
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar-ring: oklch(0.585 0.233 277.117); /* indigo-500, mesma cor do dark mode */
   --success: oklch(0.62 0.17 149);
   --success-foreground: oklch(0.985 0 0);
+  --warning: oklch(0.769 0.188 70.08); /* amber-500 */
+  --warning-foreground: oklch(0.985 0 0);
 }
 
 /*
- * Todos os apps do Sai Creative System rodam dark-only por enquanto (sem
- * toggle de tema). Zinc neutrals + indigo como primária, pra qualquer
- * sistema novo já nascer com a mesma identidade visual. `.dark` é aplicado
- * incondicionalmente via <html class="dark"> em cada app.
+ * Zinc neutrals + indigo como primária, pra qualquer sistema novo já nascer
+ * com a mesma identidade visual. Toggle de tema via `<ThemeProvider>` +
+ * `<ThemeToggle>` (components/theme-provider.tsx, components/theme-toggle.tsx)
+ * — next-themes aplica/remove `.dark` em <html> dinamicamente; dark
+ * continua sendo o tema padrão (defaultTheme="dark" no ThemeProvider).
  */
 .dark {
   --background: oklch(0.141 0.005 285.823); /* zinc-950 */
@@ -131,6 +136,8 @@
   --sidebar-ring: oklch(0.585 0.233 277.117); /* indigo-500 */
   --success: oklch(0.723 0.219 149.579); /* green-500 */
   --success-foreground: oklch(1 0 0); /* white */
+  --warning: oklch(0.828 0.189 84.429); /* amber-400 */
+  --warning-foreground: oklch(0.145 0 0); /* near-black, amber-400 is light so needs a dark foreground */
 }
 
 @layer base {

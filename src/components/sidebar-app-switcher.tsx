@@ -76,7 +76,7 @@ export function AppSwitcher({
         <ChevronDownIcon className="size-4 shrink-0 text-muted-foreground" />
       </PopoverTrigger>
       <PopoverContent>
-        <p className="px-2 py-1.5 text-xs font-medium text-muted-foreground">Produtos e apps</p>
+        <p className="px-2 py-1.5 text-xs font-medium text-muted-foreground">Sistemas Sai Creative</p>
         {loading ? (
           <p className="px-2 py-1.5 text-sm text-muted-foreground">Carregando…</p>
         ) : (

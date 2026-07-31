@@ -21,7 +21,7 @@ SidebarShell                          (casca: <aside>, cor/borda, scroll, footer
 │  └─ SidebarNavItem (× N)
 ├─ SidebarNavSection
 │  └─ SidebarNavItem (× N)
-└─ footer (prop de SidebarShell: usuário + sair)
+└─ footer (prop de SidebarShell: <SidebarUserFooter>)
 ```
 
 Nem todo sistema precisa de `SidebarBrandSelector` — sistemas que não são
@@ -68,6 +68,15 @@ Seletor de marca/perfil, usando o `Select` do pacote. Visual: quadrado
   `Select`; se ele tiver seu próprio `onClick`, chame
   `event.stopPropagation()` para não disparar a seleção da marca junto do
   clique na ação.
+- `logoUrl?: string | null` (campo opcional de `BrandOption`): se presente,
+  renderiza um `<img className="size-full object-cover">` dentro do quadrado
+  `size-9` do avatar, no lugar do vazio padrão — nunca substitui o rótulo
+  "Perfil"/nome da marca ao lado, só preenche o próprio quadrado. É **só uma
+  capacidade de exibição**: o componente não sabe de onde vem a URL nem
+  contém lógica de upload/clique para trocar a imagem — cada app consumidor é
+  responsável por buscar o `logo_path`/URL da própria marca (ex.: coluna
+  `brands.logo_path` no brandsystem) e passar `logoUrl` já resolvido no array
+  de `brands`.
 
 ### `SidebarNavSection` / `SidebarNavItem`
 
@@ -89,6 +98,25 @@ própria lib de ícones — lucide-react, SVG inline etc.); o pacote não escolh
 ícones de nav por você. `statusIndicator` é um slot opcional pra sinalizar
 algo à direita do label (ex.: checkmark verde de "validado").
 
+### `SidebarUserFooter`
+
+Rodapé padrão passado via prop `footer` de `SidebarShell`: avatar circular com
+as duas primeiras letras do e-mail (maiúsculas), e-mail, papel opcional
+abaixo (ex.: "admin"), e botão "Sair" com ícone `LogOut`. Antes deste
+componente existir, os três apps (brandsystem, briefingsystem, imagesystem)
+tinham cada um sua própria versão inline desse bloco — divergentes entre si
+(brandsystem tinha avatar+papel, briefingsystem só e-mail+ícone, imagesystem
+não tinha nada) — padronizado nesta versão.
+
+- `email?: string | null` — quando ausente/vazio, só o botão "Sair" é
+  renderizado (sem o bloco de avatar). Útil pro instante entre montar a
+  sidebar e a sessão do usuário carregar.
+- `role?: string | null` — omita em apps single-role (ex.: briefingsystem, que
+  não tem o conceito de admin/editor); só aparece quando presente.
+- `onLogout: () => void` — cada app implementa seu próprio `signOut()` +
+  redirect pra `/login` e passa aqui; o componente não sabe de Supabase Auth
+  nem de rotas.
+
 ## Exemplo mínimo de composição
 
 ```tsx
@@ -100,10 +128,10 @@ import {
   SidebarBrandSelector,
   SidebarNavSection,
   SidebarNavItem,
+  SidebarUserFooter,
   Separator,
-  Button,
 } from "@sai-creative/ui"
-import { ImageIcon, FolderOpen, Palette, LogOut } from "lucide-react"
+import { ImageIcon, FolderOpen, Palette } from "lucide-react"
 
 const NAV_ITEMS = [
   { href: "/brands", label: "Perfil de marca", icon: <Palette className="size-4" /> },
@@ -111,17 +139,10 @@ const NAV_ITEMS = [
   { href: "/library", label: "Banco de Imagens", icon: <FolderOpen className="size-4" /> },
 ]
 
-export function AppSidebar({ pathname, systems, brands, selectedBrandId, setSelectedBrandId, user }) {
+export function AppSidebar({ pathname, systems, brands, selectedBrandId, setSelectedBrandId, user, onLogout }) {
   return (
     <SidebarShell
-      footer={
-        <div className="flex items-center justify-between gap-2 px-4 py-3">
-          <span className="truncate text-sm text-muted-foreground">{user.email}</span>
-          <Button variant="ghost" size="icon-sm" aria-label="Sair">
-            <LogOut className="size-4" />
-          </Button>
-        </div>
-      }
+      footer={<SidebarUserFooter email={user.email} role={user.role} onLogout={onLogout} />}
     >
       <div className="px-4 py-6">
         <AppSwitcher appName="Image System" systems={systems} />
@@ -176,3 +197,16 @@ export function AppSidebar({ pathname, systems, brands, selectedBrandId, setSele
   só a casca desktop; overlay/hambúrguer mobile fica a critério de cada app
   (ex.: reaproveitar o mesmo conteúdo dentro de um `Dialog`), como já faz o
   imagesystem hoje.
+- **Nenhum affordance de clique pode ser aninhado dentro de `SidebarBrandSelector`**:
+  o `SelectTrigger` do `@base-ui/react/select` (usado internamente pelo
+  `Select` do pacote) renderiza como um `<button>` HTML nativo, então não é
+  possível colocar outro `<button>` dentro dele — HTML inválido e clique
+  quebrado. Qualquer recurso extra de clique sobre o avatar `size-9` (ex.:
+  upload de logo/pictograma) precisa ser um elemento **irmão** de
+  `SidebarBrandSelector` no DOM, posicionado por cima com `absolute`. O
+  brandsystem faz isso com um wrapper `<div className="relative">` envolvendo
+  os dois, e o botão de upload como
+  `absolute left-3 top-1/2 -translate-y-1/2 size-9` (replica o padding
+  `px-3`/centralização vertical do trigger para cair exatamente sobre o
+  quadrado do avatar) — use o mesmo padrão em outros apps que quiserem essa
+  affordance em vez de tentar aninhar dentro do trigger.

@@ -6,7 +6,53 @@ import { Select as SelectPrimitive } from "@base-ui/react/select"
 import { cn } from "../utils"
 import { ChevronDownIcon, CheckIcon, ChevronUpIcon } from "lucide-react"
 
-const Select = SelectPrimitive.Root
+/**
+ * base-ui's `<Select.Value>` can only show a label for the *closed* trigger
+ * from an explicit `items` list passed to `<Select.Root items={...}>` (see
+ * `resolveSelectedLabel` in `@base-ui/react/internals/resolveValueLabel`) —
+ * it does not read back the `<Select.Item>` children rendered while the
+ * popup was open, since those unmount once it closes. Every call site here
+ * just does `<SelectItem value={id}>{label}</SelectItem>` without a separate
+ * items list, so without this the trigger falls back to showing the raw
+ * value (e.g. a UUID) instead of the label right after picking an option.
+ * This walks `children` once to derive that `items` list automatically, so
+ * no call site has to pass one by hand.
+ */
+function itemsFromChildren(
+  children: React.ReactNode
+): { value: unknown; label: React.ReactNode }[] {
+  const items: { value: unknown; label: React.ReactNode }[] = []
+
+  React.Children.forEach(children, (child) => {
+    if (!React.isValidElement(child)) return
+
+    const props = child.props as { value?: unknown; children?: React.ReactNode }
+
+    if (
+      props.value !== undefined &&
+      (typeof props.children === "string" || typeof props.children === "number")
+    ) {
+      items.push({ value: props.value, label: props.children })
+      return
+    }
+
+    if (props.children) {
+      items.push(...itemsFromChildren(props.children))
+    }
+  })
+
+  return items
+}
+
+function Select({ children, ...props }: SelectPrimitive.Root.Props<any>) {
+  const items = React.useMemo(() => itemsFromChildren(children), [children])
+
+  return (
+    <SelectPrimitive.Root items={items} {...props}>
+      {children}
+    </SelectPrimitive.Root>
+  )
+}
 
 function SelectGroup({ className, ...props }: SelectPrimitive.Group.Props) {
   return (
