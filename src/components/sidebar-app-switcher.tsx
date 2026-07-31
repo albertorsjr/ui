@@ -8,6 +8,14 @@ export interface SystemEntry {
   key: string
   label: string
   url: string | null
+  /**
+   * `true` = sistema fora do ecossistema Next.js (ex.: Content System, webhook
+   * n8n) — não tem rota `/bridge` própria pra receber a ponte de sessão.
+   * Ausente/`false` = sistema interno, suporta a ponte normalmente. Quem
+   * implementa `onSystemNavigate` decide o que fazer com essa flag (o
+   * `AppSwitcher` em si só repassa o campo, não tem lógica de navegação).
+   */
+  external?: boolean
 }
 
 export interface AppSwitcherProps {
