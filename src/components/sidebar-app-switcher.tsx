@@ -19,6 +19,13 @@ export interface AppSwitcherProps {
   systemIcons?: Record<string, React.ReactNode>
   loading?: boolean
   className?: string
+  /**
+   * Callback opcional pra interceptar o clique num sistema do switcher.
+   * Quem implementa é responsável por chamar `event.preventDefault()` se
+   * quiser cancelar a navegação padrão do `<a>` — sem isso, o link segue
+   * navegando normalmente pro `system.url` além de rodar o callback.
+   */
+  onSystemNavigate?: (system: SystemEntry, event: React.MouseEvent<HTMLAnchorElement>) => void
 }
 
 /**
@@ -60,6 +67,7 @@ export function AppSwitcher({
   systemIcons,
   loading,
   className,
+  onSystemNavigate,
 }: AppSwitcherProps) {
   return (
     <Popover>
@@ -114,6 +122,9 @@ export function AppSwitcher({
               <a
                 key={system.key}
                 href={system.url}
+                // A navegação padrão do `<a>` só é cancelada se o handler
+                // passado em `onSystemNavigate` chamar `event.preventDefault()`.
+                onClick={onSystemNavigate ? (event) => onSystemNavigate(system, event) : undefined}
                 className="flex items-center gap-3 rounded-md px-2 py-2 transition-colors hover:bg-accent"
               >
                 {itemContent}

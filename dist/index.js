@@ -787,7 +787,8 @@ function AppSwitcher({
   systems,
   systemIcons,
   loading,
-  className
+  className,
+  onSystemNavigate
 }) {
   return /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(Popover, { children: [
     /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(
@@ -832,6 +833,7 @@ function AppSwitcher({
           "a",
           {
             href: system.url,
+            onClick: onSystemNavigate ? (event) => onSystemNavigate(system, event) : void 0,
             className: "flex items-center gap-3 rounded-md px-2 py-2 transition-colors hover:bg-accent",
             children: itemContent
           },

@@ -92,13 +92,20 @@ interface AppSwitcherProps {
     systemIcons?: Record<string, React$1.ReactNode>;
     loading?: boolean;
     className?: string;
+    /**
+     * Callback opcional pra interceptar o clique num sistema do switcher.
+     * Quem implementa é responsável por chamar `event.preventDefault()` se
+     * quiser cancelar a navegação padrão do `<a>` — sem isso, o link segue
+     * navegando normalmente pro `system.url` além de rodar o callback.
+     */
+    onSystemNavigate?: (system: SystemEntry, event: React$1.MouseEvent<HTMLAnchorElement>) => void;
 }
 /**
  * Cabeçalho de sidebar com nome do app + troca entre sistemas do ecossistema
  * Sai Creative System. Padrão oficial extraído do imagesystem
  * ((dashboard)/layout.tsx) — ver ui/SIDEBAR_PATTERN.md.
  */
-declare function AppSwitcher({ appName, systems, systemIcons, loading, className, }: AppSwitcherProps): React$1.JSX.Element;
+declare function AppSwitcher({ appName, systems, systemIcons, loading, className, onSystemNavigate, }: AppSwitcherProps): React$1.JSX.Element;
 
 interface BrandOption {
     id: string;
