@@ -1,3 +1,8 @@
 node_modules/
 *.tsbuildinfo
 .DS_Store
+
+# agent skills instaladas por `npx skills add` (vendoradas, nao versionar)
+.agents/
+.claude/skills/
+skills-lock.json
