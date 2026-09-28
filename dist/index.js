@@ -811,14 +811,15 @@ function AppSwitcher({
       /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("p", { className: "px-2 py-1.5 text-xs font-medium text-muted-foreground", children: "Sistemas Sai Creative" }),
       loading ? /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("p", { className: "px-2 py-1.5 text-sm text-muted-foreground", children: "Carregando\u2026" }) : systems.map((system) => {
         const icon = systemIcons?.[system.key] ?? /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(DefaultSystemIcon, {});
+        const statusLabel = system.em_construcao ? "Em constru\xE7\xE3o" : !system.url ? "Em breve" : null;
         const itemContent = /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)(import_jsx_runtime10.Fragment, { children: [
           /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("span", { className: "flex size-9 shrink-0 items-center justify-center rounded-md bg-muted text-foreground", children: icon }),
           /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("span", { className: "flex flex-col", children: [
             /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("span", { className: "text-sm font-medium text-foreground", children: system.label }),
-            !system.url && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("span", { className: "text-xs text-muted-foreground", children: "Em breve" })
+            statusLabel && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("span", { className: "text-xs text-muted-foreground", children: statusLabel })
           ] })
         ] });
-        if (!system.url) {
+        if (statusLabel) {
           return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
             "div",
             {
@@ -832,7 +833,7 @@ function AppSwitcher({
         return /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(
           "a",
           {
-            href: system.url,
+            href: system.url ?? void 0,
             onClick: onSystemNavigate ? (event) => onSystemNavigate(system, event) : void 0,
             className: "flex items-center gap-3 rounded-md px-2 py-2 transition-colors hover:bg-accent",
             children: itemContent

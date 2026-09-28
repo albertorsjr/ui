@@ -721,14 +721,15 @@ function AppSwitcher({
       /* @__PURE__ */ jsx10("p", { className: "px-2 py-1.5 text-xs font-medium text-muted-foreground", children: "Sistemas Sai Creative" }),
       loading ? /* @__PURE__ */ jsx10("p", { className: "px-2 py-1.5 text-sm text-muted-foreground", children: "Carregando\u2026" }) : systems.map((system) => {
         const icon = systemIcons?.[system.key] ?? /* @__PURE__ */ jsx10(DefaultSystemIcon, {});
+        const statusLabel = system.em_construcao ? "Em constru\xE7\xE3o" : !system.url ? "Em breve" : null;
         const itemContent = /* @__PURE__ */ jsxs4(Fragment, { children: [
           /* @__PURE__ */ jsx10("span", { className: "flex size-9 shrink-0 items-center justify-center rounded-md bg-muted text-foreground", children: icon }),
           /* @__PURE__ */ jsxs4("span", { className: "flex flex-col", children: [
             /* @__PURE__ */ jsx10("span", { className: "text-sm font-medium text-foreground", children: system.label }),
-            !system.url && /* @__PURE__ */ jsx10("span", { className: "text-xs text-muted-foreground", children: "Em breve" })
+            statusLabel && /* @__PURE__ */ jsx10("span", { className: "text-xs text-muted-foreground", children: statusLabel })
           ] })
         ] });
-        if (!system.url) {
+        if (statusLabel) {
           return /* @__PURE__ */ jsx10(
             "div",
             {
@@ -742,7 +743,7 @@ function AppSwitcher({
         return /* @__PURE__ */ jsx10(
           "a",
           {
-            href: system.url,
+            href: system.url ?? void 0,
             onClick: onSystemNavigate ? (event) => onSystemNavigate(system, event) : void 0,
             className: "flex items-center gap-3 rounded-md px-2 py-2 transition-colors hover:bg-accent",
             children: itemContent

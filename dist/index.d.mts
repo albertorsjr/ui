@@ -90,6 +90,12 @@ interface SystemEntry {
      * `AppSwitcher` em si só repassa o campo, não tem lógica de navegação).
      */
     external?: boolean;
+    /**
+     * `true` = sistema temporariamente fechado (coluna `systems.em_construcao`):
+     * aparece desabilitado com "Em construção", mesmo tendo `url`. Diferente de
+     * `url` null, que é sistema que ainda não existe ("Em breve").
+     */
+    em_construcao?: boolean;
 }
 interface AppSwitcherProps {
     /** Nome do app atual, ex.: "Brand System", "Image System". */

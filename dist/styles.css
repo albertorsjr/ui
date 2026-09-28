@@ -80,7 +80,8 @@
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.75rem;
+  /* Card (rounded-xl = radius × 1.4) fica com exatamente 12px; o resto da escala acompanha. */
+  --radius: calc(0.75rem / 1.4);
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.511 0.262 276.966); /* indigo-600, mesma cor do dark mode */
@@ -150,4 +151,13 @@
   html {
     @apply font-sans;
   }
+}
+
+/*
+ * Card dentro de card fica um degrau abaixo na escala (radius-lg em vez de
+ * radius-xl), pra o canto interno acompanhar o externo proporcionalmente.
+ * Fora de @layer de propósito: precisa vencer o `rounded-xl` do utilitário.
+ */
+[data-slot="card"] [data-slot="card"] {
+  border-radius: var(--radius-lg);
 }

@@ -16,6 +16,12 @@ export interface SystemEntry {
    * `AppSwitcher` em si só repassa o campo, não tem lógica de navegação).
    */
   external?: boolean
+  /**
+   * `true` = sistema temporariamente fechado (coluna `systems.em_construcao`):
+   * aparece desabilitado com "Em construção", mesmo tendo `url`. Diferente de
+   * `url` null, que é sistema que ainda não existe ("Em breve").
+   */
+  em_construcao?: boolean
 }
 
 export interface AppSwitcherProps {
@@ -98,6 +104,7 @@ export function AppSwitcher({
         ) : (
           systems.map((system) => {
             const icon = systemIcons?.[system.key] ?? <DefaultSystemIcon />
+            const statusLabel = system.em_construcao ? "Em construção" : !system.url ? "Em breve" : null
             const itemContent = (
               <>
                 <span className="flex size-9 shrink-0 items-center justify-center rounded-md bg-muted text-foreground">
@@ -105,16 +112,16 @@ export function AppSwitcher({
                 </span>
                 <span className="flex flex-col">
                   <span className="text-sm font-medium text-foreground">{system.label}</span>
-                  {!system.url && (
-                    <span className="text-xs text-muted-foreground">Em breve</span>
+                  {statusLabel && (
+                    <span className="text-xs text-muted-foreground">{statusLabel}</span>
                   )}
                 </span>
               </>
             )
 
-            // Sistema ainda sem app deployado (`url` null): mostra desabilitado
-            // em vez de link, sem quebrar o layout do item.
-            if (!system.url) {
+            // Sistema ainda sem app deployado (`url` null) ou em construção:
+            // mostra desabilitado em vez de link, sem quebrar o layout do item.
+            if (statusLabel) {
               return (
                 <div
                   key={system.key}
@@ -129,7 +136,7 @@ export function AppSwitcher({
             return (
               <a
                 key={system.key}
-                href={system.url}
+                href={system.url ?? undefined}
                 // A navegação padrão do `<a>` só é cancelada se o handler
                 // passado em `onSystemNavigate` chamar `event.preventDefault()`.
                 onClick={onSystemNavigate ? (event) => onSystemNavigate(system, event) : undefined}
