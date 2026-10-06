@@ -96,6 +96,11 @@ interface SystemEntry {
      * `url` null, que é sistema que ainda não existe ("Em breve").
      */
     em_construcao?: boolean;
+    /**
+     * `true` = sistema recém-lançado (coluna `systems.novo`): mostra a tag
+     * "Novo" ao lado do nome. Puramente visual, não muda a navegação.
+     */
+    novo?: boolean;
 }
 interface AppSwitcherProps {
     /** Nome do app atual, ex.: "Brand System", "Image System". */

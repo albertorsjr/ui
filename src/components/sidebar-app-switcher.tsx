@@ -1,6 +1,7 @@
 import * as React from "react"
 
 import { cn } from "../utils"
+import { Badge } from "./badge"
 import { Popover, PopoverContent, PopoverTrigger } from "./popover"
 
 /** Linha do catálogo compartilhado `systems` (RLS já filtra pelo que o usuário logado pode acessar). */
@@ -22,6 +23,11 @@ export interface SystemEntry {
    * `url` null, que é sistema que ainda não existe ("Em breve").
    */
   em_construcao?: boolean
+  /**
+   * `true` = sistema recém-lançado (coluna `systems.novo`): mostra a tag
+   * "Novo" ao lado do nome. Puramente visual, não muda a navegação.
+   */
+  novo?: boolean
 }
 
 export interface AppSwitcherProps {
@@ -111,7 +117,10 @@ export function AppSwitcher({
                   {icon}
                 </span>
                 <span className="flex flex-col">
-                  <span className="text-sm font-medium text-foreground">{system.label}</span>
+                  <span className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                    {system.label}
+                    {system.novo && <Badge className="h-4 px-1.5 text-[10px]">Novo</Badge>}
+                  </span>
                   {statusLabel && (
                     <span className="text-xs text-muted-foreground">{statusLabel}</span>
                   )}

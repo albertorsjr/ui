@@ -725,7 +725,10 @@ function AppSwitcher({
         const itemContent = /* @__PURE__ */ jsxs4(Fragment, { children: [
           /* @__PURE__ */ jsx10("span", { className: "flex size-9 shrink-0 items-center justify-center rounded-md bg-muted text-foreground", children: icon }),
           /* @__PURE__ */ jsxs4("span", { className: "flex flex-col", children: [
-            /* @__PURE__ */ jsx10("span", { className: "text-sm font-medium text-foreground", children: system.label }),
+            /* @__PURE__ */ jsxs4("span", { className: "flex items-center gap-1.5 text-sm font-medium text-foreground", children: [
+              system.label,
+              system.novo && /* @__PURE__ */ jsx10(Badge, { className: "h-4 px-1.5 text-[10px]", children: "Novo" })
+            ] }),
             statusLabel && /* @__PURE__ */ jsx10("span", { className: "text-xs text-muted-foreground", children: statusLabel })
           ] })
         ] });
