@@ -28,6 +28,11 @@ export interface SystemEntry {
    * "Novo" ao lado do nome. Puramente visual, não muda a navegação.
    */
   novo?: boolean
+  /**
+   * `true` = sistema liberado em teste (coluna `systems.beta`): mostra a tag
+   * "Beta" ao lado do nome. Puramente visual, não muda a navegação.
+   */
+  beta?: boolean
 }
 
 export interface AppSwitcherProps {
@@ -120,6 +125,11 @@ export function AppSwitcher({
                   <span className="flex items-center gap-1.5 text-sm font-medium text-foreground">
                     {system.label}
                     {system.novo && <Badge className="h-4 px-1.5 text-[10px]">Novo</Badge>}
+                    {system.beta && (
+                      <Badge variant="outline" className="h-4 px-1.5 text-[10px]">
+                        Beta
+                      </Badge>
+                    )}
                   </span>
                   {statusLabel && (
                     <span className="text-xs text-muted-foreground">{statusLabel}</span>
