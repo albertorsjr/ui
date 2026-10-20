@@ -101,6 +101,11 @@ interface SystemEntry {
      * "Novo" ao lado do nome. Puramente visual, não muda a navegação.
      */
     novo?: boolean;
+    /**
+     * `true` = sistema liberado em teste (coluna `systems.beta`): mostra a tag
+     * "Beta" ao lado do nome. Puramente visual, não muda a navegação.
+     */
+    beta?: boolean;
 }
 interface AppSwitcherProps {
     /** Nome do app atual, ex.: "Brand System", "Image System". */
@@ -168,18 +173,27 @@ interface SidebarNavItemProps {
     disabled?: boolean;
     /** Ex.: checkmark verde de "validado". Opcional, renderizado à direita do label. */
     statusIndicator?: React$1.ReactNode;
-    /** Ex.: fechar menu mobile ao navegar. Opcional. */
-    onClick?: () => void;
+    /** Ex.: fechar menu mobile ao navegar. Opcional. Recebe o evento do clique,
+     *  então `event.preventDefault()` cancela a navegação (vale também com
+     *  `linkComponent`, porque o `next/link` respeita `defaultPrevented`). */
+    onClick?: (event: React$1.MouseEvent<HTMLAnchorElement>) => void;
+    /** Componente de link do app (ex.: `next/link`) para navegação client-side,
+     *  sem recarregar a página inteira. Sem ele, cai no `<a>` simples. Item
+     *  `disabled` sempre usa `<a>` sem href, porque não há para onde navegar. */
+    linkComponent?: SidebarLinkComponent;
     className?: string;
 }
+/** Forma mínima que o `linkComponent` precisa aceitar — o `next/link` cabe. */
+type SidebarLinkComponent = React$1.ComponentType<React$1.AnchorHTMLAttributes<HTMLAnchorElement> & {
+    href: string;
+}>;
 /**
- * Item de navegação da sidebar. Usa `<a>` simples — o pacote não depende de
- * Next.js; se o app consumidor quiser client-side routing (next/link), ele
- * troca por seu próprio wrapper (essa é uma limitação documentada, ver
- * ui/SIDEBAR_PATTERN.md). Estado ativo usa só tokens semânticos, nunca cores
- * hardcoded.
+ * Item de navegação da sidebar. O pacote não depende de Next.js: por padrão
+ * usa `<a>` simples (recarrega a página inteira a cada clique); o app passa
+ * `linkComponent` (ex.: `next/link`) para navegar client-side. Estado ativo
+ * usa só tokens semânticos, nunca cores hardcoded.
  */
-declare function SidebarNavItem({ href, label, icon, active, disabled, statusIndicator, onClick, className, }: SidebarNavItemProps): React$1.JSX.Element;
+declare function SidebarNavItem({ href, label, icon, active, disabled, statusIndicator, onClick, linkComponent, className, }: SidebarNavItemProps): React$1.JSX.Element;
 interface SidebarNavSectionProps {
     /** Eyebrow tipo "BIBLIOTECA". Opcional. */
     label?: string;
@@ -259,4 +273,4 @@ declare function ThemeToggle({ className }: ThemeToggleProps): React$1.JSX.Eleme
 
 declare function cn(...inputs: ClassValue[]): string;
 
-export { AppSwitcher, type AppSwitcherProps, Badge, type BrandOption, Button, Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Checkbox, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, Input, Label, Popover, PopoverContent, PopoverTrigger, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, SelectValue, Separator, SidebarBrandSelector, type SidebarBrandSelectorProps, SidebarNavItem, type SidebarNavItemProps, SidebarNavSection, type SidebarNavSectionProps, SidebarShell, type SidebarShellProps, SidebarUserFooter, type SidebarUserFooterProps, Skeleton, type SystemEntry, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, ThemeProvider, ThemeToggle, type ThemeToggleProps, Toaster, badgeVariants, buttonVariants, cn, tabsListVariants };
+export { AppSwitcher, type AppSwitcherProps, Badge, type BrandOption, Button, Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Checkbox, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, Input, Label, Popover, PopoverContent, PopoverTrigger, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, SelectValue, Separator, SidebarBrandSelector, type SidebarBrandSelectorProps, type SidebarLinkComponent, SidebarNavItem, type SidebarNavItemProps, SidebarNavSection, type SidebarNavSectionProps, SidebarShell, type SidebarShellProps, SidebarUserFooter, type SidebarUserFooterProps, Skeleton, type SystemEntry, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, ThemeProvider, ThemeToggle, type ThemeToggleProps, Toaster, badgeVariants, buttonVariants, cn, tabsListVariants };

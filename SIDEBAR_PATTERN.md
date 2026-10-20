@@ -81,11 +81,12 @@ Seletor de marca/perfil, usando o `Select` do pacote. Visual: quadrado
 ### `SidebarNavSection` / `SidebarNavItem`
 
 `SidebarNavSection` agrupa itens sob um rótulo opcional tipo "BIBLIOTECA"
-(eyebrow). `SidebarNavItem` renderiza um `<a>` simples — o pacote **não**
-depende de Next.js, então não usa `next/link`. Isso é uma limitação
-documentada: se o app quiser client-side routing (sem full reload), ele deve
-compor o próprio wrapper de `Link` por cima, ou aceitar o full reload do
-`<a>` puro. O estado ativo usa só tokens semânticos:
+(eyebrow). O pacote **não** depende de Next.js: por padrão `SidebarNavItem`
+renderiza um `<a>` simples, que recarrega a página inteira a cada clique.
+Desde a 0.1.3 o app passa `linkComponent` (ex.: `next/link`) para navegar
+client-side — foi o achado nº 1 da avaliação de desempenho de 20/10/2026.
+Item `disabled` continua em `<a>` sem href. O estado ativo usa só tokens
+semânticos:
 
 - ativo: `bg-sidebar-accent text-sidebar-accent-foreground`
 - inativo: `text-muted-foreground hover:bg-sidebar-accent/50`
@@ -185,10 +186,9 @@ export function AppSidebar({ pathname, systems, brands, selectedBrandId, setSele
   `Select` do pacote (`@base-ui/react/select`) não expõe um jeito nativo de
   renderizar conteúdo não-selecionável dentro de um item. Documentei a
   necessidade de `stopPropagation()` no app consumidor.
-- **`SidebarNavItem` sem `next/link`**: uso de `<a>` puro é intencional (o
-  pacote não deve depender de Next.js); full page reload é uma limitação
-  aceita — cada app pode envolver com seu próprio `Link` se quiser evitar
-  isso.
+- **`SidebarNavItem` sem `next/link` no pacote**: o pacote não depende de
+  Next.js; o app injeta o link pela prop `linkComponent` (0.1.3). Sem ela,
+  cai no `<a>` puro e no full reload.
 - **Nenhum dos 4 arquivos novos tem `"use client"` no topo**: seguindo o
   padrão já existente em `button.tsx`/`card.tsx` (que compõem primitivas como
   `Popover`/`Select`, essas sim com `"use client"` próprio, sem precisar

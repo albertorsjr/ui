@@ -817,7 +817,8 @@ function AppSwitcher({
           /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("span", { className: "flex flex-col", children: [
             /* @__PURE__ */ (0, import_jsx_runtime10.jsxs)("span", { className: "flex items-center gap-1.5 text-sm font-medium text-foreground", children: [
               system.label,
-              system.novo && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Badge, { className: "h-4 px-1.5 text-[10px]", children: "Novo" })
+              system.novo && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Badge, { className: "h-4 px-1.5 text-[10px]", children: "Novo" }),
+              system.beta && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)(Badge, { variant: "outline", className: "h-4 px-1.5 text-[10px]", children: "Beta" })
             ] }),
             statusLabel && /* @__PURE__ */ (0, import_jsx_runtime10.jsx)("span", { className: "text-xs text-muted-foreground", children: statusLabel })
           ] })
@@ -931,10 +932,12 @@ function SidebarNavItem({
   disabled,
   statusIndicator,
   onClick,
+  linkComponent,
   className
 }) {
+  const Comp = !disabled && linkComponent ? linkComponent : "a";
   return /* @__PURE__ */ (0, import_jsx_runtime12.jsxs)(
-    "a",
+    Comp,
     {
       href: disabled ? void 0 : href,
       "aria-current": active ? "page" : void 0,

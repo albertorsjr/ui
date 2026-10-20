@@ -12,17 +12,27 @@ export interface SidebarNavItemProps {
   disabled?: boolean
   /** Ex.: checkmark verde de "validado". Opcional, renderizado à direita do label. */
   statusIndicator?: React.ReactNode
-  /** Ex.: fechar menu mobile ao navegar. Opcional. */
-  onClick?: () => void
+  /** Ex.: fechar menu mobile ao navegar. Opcional. Recebe o evento do clique,
+   *  então `event.preventDefault()` cancela a navegação (vale também com
+   *  `linkComponent`, porque o `next/link` respeita `defaultPrevented`). */
+  onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void
+  /** Componente de link do app (ex.: `next/link`) para navegação client-side,
+   *  sem recarregar a página inteira. Sem ele, cai no `<a>` simples. Item
+   *  `disabled` sempre usa `<a>` sem href, porque não há para onde navegar. */
+  linkComponent?: SidebarLinkComponent
   className?: string
 }
 
+/** Forma mínima que o `linkComponent` precisa aceitar — o `next/link` cabe. */
+export type SidebarLinkComponent = React.ComponentType<
+  React.AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }
+>
+
 /**
- * Item de navegação da sidebar. Usa `<a>` simples — o pacote não depende de
- * Next.js; se o app consumidor quiser client-side routing (next/link), ele
- * troca por seu próprio wrapper (essa é uma limitação documentada, ver
- * ui/SIDEBAR_PATTERN.md). Estado ativo usa só tokens semânticos, nunca cores
- * hardcoded.
+ * Item de navegação da sidebar. O pacote não depende de Next.js: por padrão
+ * usa `<a>` simples (recarrega a página inteira a cada clique); o app passa
+ * `linkComponent` (ex.: `next/link`) para navegar client-side. Estado ativo
+ * usa só tokens semânticos, nunca cores hardcoded.
  */
 export function SidebarNavItem({
   href,
@@ -32,10 +42,12 @@ export function SidebarNavItem({
   disabled,
   statusIndicator,
   onClick,
+  linkComponent,
   className,
 }: SidebarNavItemProps) {
+  const Comp: React.ElementType = !disabled && linkComponent ? linkComponent : "a"
   return (
-    <a
+    <Comp
       href={disabled ? undefined : href}
       aria-current={active ? "page" : undefined}
       aria-disabled={disabled || undefined}
@@ -54,7 +66,7 @@ export function SidebarNavItem({
       </span>
       <span className="flex-1 truncate">{label}</span>
       {statusIndicator}
-    </a>
+    </Comp>
   )
 }
 
