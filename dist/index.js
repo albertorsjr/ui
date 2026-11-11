@@ -1025,14 +1025,18 @@ function ThemeToggle({ className }) {
 
 // src/components/sidebar-user-footer.tsx
 var import_jsx_runtime15 = require("react/jsx-runtime");
-function SidebarUserFooter({ email, role, onLogout, className }) {
-  const initials = email ? email.slice(0, 2).toUpperCase() : "??";
+function SidebarUserFooter({ email, name, role, onLogout, className }) {
+  const displayName = name?.trim() || null;
+  const initials = displayName ? displayName.split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase() : email ? email.slice(0, 2).toUpperCase() : "??";
   return /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("div", { className: cn("flex flex-col gap-1 px-2 py-2", className), children: [
     /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("div", { className: "flex items-center gap-2 rounded-md px-2 py-1.5", children: [
       email ? /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_jsx_runtime15.Fragment, { children: [
         /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("div", { className: "flex size-7 shrink-0 items-center justify-center rounded-full bg-sidebar-primary/15 text-xs font-semibold text-sidebar-primary", children: initials }),
         /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)("div", { className: "min-w-0 flex-1", children: [
-          /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("p", { className: "truncate text-xs font-medium text-sidebar-foreground", children: email }),
+          displayName ? /* @__PURE__ */ (0, import_jsx_runtime15.jsxs)(import_jsx_runtime15.Fragment, { children: [
+            /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("p", { className: "truncate text-sm font-medium text-sidebar-foreground", children: displayName }),
+            /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("p", { className: "truncate text-xs text-muted-foreground", title: email, children: email })
+          ] }) : /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("p", { className: "truncate text-xs font-medium text-sidebar-foreground", children: email }),
           role && /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("p", { className: "text-xs capitalize text-muted-foreground", children: role })
         ] })
       ] }) : /* @__PURE__ */ (0, import_jsx_runtime15.jsx)("div", { className: "flex-1" }),

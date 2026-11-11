@@ -219,6 +219,12 @@ declare function SidebarShell({ children, footer, className }: SidebarShellProps
 interface SidebarUserFooterProps {
     /** E-mail do usuário logado. Quando ausente/vazio, só o avatar some (toggle de tema e "Sair" continuam). */
     email?: string | null;
+    /**
+     * Apelido (user_profiles.apelido). Quando presente, aparece em destaque com
+     * o e-mail menor embaixo, e as iniciais do avatar saem dele. Opcional:
+     * apps que não passam continuam mostrando só o e-mail.
+     */
+    name?: string | null;
     /** Papel do usuário (ex.: "admin"), exibido abaixo do e-mail. Omita em apps single-role (ex.: briefingsystem). */
     role?: string | null;
     onLogout: () => void;
@@ -230,7 +236,7 @@ interface SidebarUserFooterProps {
  * ui/SIDEBAR_PATTERN.md. O `ThemeToggle` só funciona se o app tiver
  * `<ThemeProvider>` montado acima na árvore (theme-provider.tsx).
  */
-declare function SidebarUserFooter({ email, role, onLogout, className }: SidebarUserFooterProps): React$1.JSX.Element;
+declare function SidebarUserFooter({ email, name, role, onLogout, className }: SidebarUserFooterProps): React$1.JSX.Element;
 
 declare function Skeleton({ className, ...props }: React.ComponentProps<"div">): React$1.JSX.Element;
 
