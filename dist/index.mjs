@@ -372,11 +372,219 @@ function DialogDescription({
   );
 }
 
+// src/components/field-help.tsx
+import { Popover as PopoverPrimitive } from "@base-ui/react/popover";
+import { Check, X } from "lucide-react";
+import { jsx as jsx5, jsxs as jsxs3 } from "react/jsx-runtime";
+var CAMADAS_CONTEUDO = [
+  { id: "marca", nome: "Marca", pergunta: "A frase vale para qualquer p\xFAblico e qualquer campanha?" },
+  { id: "publico", nome: "P\xFAblico", pergunta: "A frase vale para qualquer campanha deste p\xFAblico?" },
+  { id: "momento", nome: "Momento", pergunta: "A frase vale para qualquer produto e qualquer p\xFAblico?" },
+  { id: "campanha", nome: "Campanha", pergunta: "A frase vale para todas as pe\xE7as desta campanha?" },
+  { id: "peca", nome: "Pe\xE7a", pergunta: "A frase vale s\xF3 para esta pe\xE7a?" }
+];
+var GUIA_CAMPOS = {
+  dosDonts: {
+    titulo: "Do\u2019s e Don\u2019ts",
+    subtitulo: "Regras que valem para toda a marca",
+    camada: "marca",
+    vai: "O que vale para qualquer pe\xE7a, qualquer p\xFAblico e qualquer campanha.",
+    naoVai: "Tratamento de um p\xFAblico (vai no Tom dele) ou regra de uma campanha s\xF3.",
+    bom: "N\xE3o prometer resultado sem comprova\xE7\xE3o.",
+    ruim: "Fale com o gestor, n\xE3o com o dono.",
+    porqueRuim: "Vale para um p\xFAblico s\xF3. Aqui, chega em todos."
+  },
+  perfil: {
+    titulo: "Perfil",
+    subtitulo: "Quem \xE9 este p\xFAblico",
+    camada: "publico",
+    vai: "Fatos sobre o neg\xF3cio, quem l\xEA a mensagem e situa\xE7\xF5es reais da rotina. Num p\xFAblico geral, s\xF3 situa\xE7\xF5es que valem para todo ramo.",
+    naoVai: "Argumento de produto, regra de campanha ou vocabul\xE1rio (vai no Tom).",
+    bom: "Lojas de bairro com at\xE9 3 funcion\xE1rios; o dono atende no balc\xE3o. Rotina: movimento forte no fim de semana, fechamento do caixa \xE0 noite.",
+    ruim: "Mostre que o novo app resolve o fechamento do caixa.",
+    porqueRuim: "\xC9 argumento de uma campanha. Quando ela acabar, o p\xFAblico continua dizendo isso."
+  },
+  tom: {
+    titulo: "Tom",
+    subtitulo: "Como falar com este p\xFAblico",
+    camada: "publico",
+    vai: "Registro, tratamento (voc\xEA ou o neg\xF3cio) e palavras pr\xF3prias deste p\xFAblico.",
+    naoVai: "Frase pronta de campanha (vai no Foco). Proibi\xE7\xE3o de toda a marca (vai em Do\u2019s e Don\u2019ts).",
+    bom: "Consultivo e direto. Fale com o neg\xF3cio, n\xE3o com a pessoa: \u201Cpara a sua empresa\u201D, n\xE3o \u201Cpra voc\xEA\u201D.",
+    ruim: "Use: \u201CSeu caixa pode fazer mais por voc\xEA\u201D.",
+    porqueRuim: "\xC9 frase de uma campanha: a IA repete em todas as pe\xE7as deste p\xFAblico."
+  },
+  gatilho: {
+    titulo: "Gatilho principal",
+    subtitulo: "O que este p\xFAblico quer resolver",
+    camada: "publico",
+    vai: "A vontade ou o problema do p\xFAblico, em uma ou duas frases. Vale para qualquer campanha.",
+    naoVai: "Oferta, produto ou meta de campanha (vai no Objetivo).",
+    bom: "Gastar menos tempo com o caixa e mais com o cliente.",
+    ruim: "Ativar o cashback de novembro.",
+    porqueRuim: "\xC9 a meta de uma campanha, n\xE3o o que o p\xFAblico quer."
+  },
+  contexto: {
+    titulo: "Contexto",
+    subtitulo: "O momento da rela\xE7\xE3o com o produto",
+    camada: "momento",
+    vai: "Em que momento o cliente est\xE1 (nunca usou, usa pouco, vai cancelar) e o que a pe\xE7a faz nele. Vale para qualquer produto e qualquer p\xFAblico.",
+    naoVai: "Tom ou vocabul\xE1rio de um p\xFAblico (vai no Brand System).",
+    bom: "Primeiro uso: o cliente tem o recurso e nunca usou. A pe\xE7a mostra a primeira situa\xE7\xE3o em que vale usar.",
+    ruim: "Primeiro uso: fale com o gestor, sem \u201Cpra voc\xEA\u201D.",
+    porqueRuim: "\xC9 tratamento de um p\xFAblico. Aqui, chega em todos os p\xFAblicos que usam o preset."
+  },
+  argumento: {
+    titulo: "Argumento",
+    subtitulo: "A linha de racioc\xEDnio neste momento",
+    camada: "momento",
+    vai: "Como a pe\xE7a convence neste momento, de um jeito que sirva para qualquer produto.",
+    naoVai: "Dados de um produto espec\xEDfico (v\xE3o no Overview da campanha).",
+    bom: "Mostrar o benef\xEDcio numa situa\xE7\xE3o concreta da rotina.",
+    ruim: "Falar do cashback de 1% do conversor.",
+    porqueRuim: "\xC9 dado de um produto. Na pr\xF3xima campanha, a IA repete o cashback."
+  },
+  condicoes: {
+    titulo: "Condi\xE7\xF5es exclusivas",
+    subtitulo: "Exce\xE7\xF5es que valem s\xF3 aqui",
+    camada: "momento",
+    vai: "Uma exce\xE7\xE3o que vale s\xF3 para as campanhas deste preset.",
+    naoVai: "Regra permanente de um p\xFAblico (vai no Tom) ou da marca (vai em Do\u2019s e Don\u2019ts).",
+    bom: "N\xE3o citar a taxa promocional: ainda n\xE3o foi aprovada.",
+    ruim: "Para empresas maiores, evite \u201Cpra voc\xEA\u201D.",
+    porqueRuim: "\xC9 regra de um p\xFAblico. Aqui, atinge todo p\xFAblico que usa o preset."
+  },
+  overview: {
+    titulo: "Overview",
+    subtitulo: "O que h\xE1 de novo nesta campanha",
+    camada: "campanha",
+    vai: "O produto ou fato da campanha, para quem est\xE1 dispon\xEDvel, condi\xE7\xF5es e mec\xE2nica.",
+    naoVai: "Quem \xE9 o p\xFAblico (vem do Brand System) e o momento, como Primeiro uso (vem do preset).",
+    bom: "Conversor de moedas na maquininha: sem custo, dispon\xEDvel para quem tem o modelo X; 1% de cashback nas transa\xE7\xF5es eleg\xEDveis.",
+    ruim: "P\xFAblico de empresas maiores, em primeiro uso, que precisa ser incentivado.",
+    porqueRuim: "Repete o Perfil e o Contexto: a IA d\xE1 peso dobrado."
+  },
+  objetivo: {
+    titulo: "Objetivo",
+    subtitulo: "A mudan\xE7a que a campanha quer causar",
+    camada: "campanha",
+    vai: "O que deve mudar no comportamento do cliente e como saber se deu certo, em uma ou duas frases.",
+    naoVai: "A descri\xE7\xE3o do produto (j\xE1 est\xE1 no Overview).",
+    bom: "Fazer o cliente usar o conversor pela primeira vez em 30 dias. Medida: primeira transa\xE7\xE3o.",
+    ruim: "Apresentar o conversor de moedas e suas vantagens.",
+    porqueRuim: "Descreve o conte\xFAdo, n\xE3o a mudan\xE7a que se espera."
+  },
+  foco: {
+    titulo: "Foco da comunica\xE7\xE3o",
+    subtitulo: "O que s\xF3 esta pe\xE7a tem",
+    camada: "peca",
+    vai: "A ideia e o \xE2ngulo, a situa\xE7\xE3o da rotina escolhida e a frase que precisa sair igual (marcada como obrigat\xF3ria).",
+    naoVai: "Quem \xE9 o p\xFAblico, o momento (Contexto, Argumento) e o vocabul\xE1rio dele: j\xE1 chegam sozinhos.",
+    bom: "Situa\xE7\xE3o: evento na cidade. T\xEDtulo obrigat\xF3rio: \u201CChegou um cliente de fora?\u201D",
+    ruim: "Empresas maiores, evite \u201Cpra voc\xEA\u201D. \xC9 o primeiro uso, ent\xE3o incentive a usar.",
+    porqueRuim: "Repete o Tom do p\xFAblico e o Contexto do preset: a IA d\xE1 peso dobrado."
+  }
+};
+function FieldHelp({ campo, manualHref, className }) {
+  const guia = GUIA_CAMPOS[campo];
+  const camada = CAMADAS_CONTEUDO.find((c) => c.id === guia.camada);
+  return /* @__PURE__ */ jsxs3(PopoverPrimitive.Root, { children: [
+    /* @__PURE__ */ jsx5(
+      PopoverPrimitive.Trigger,
+      {
+        type: "button",
+        "aria-label": `Como preencher: ${guia.titulo}`,
+        className: cn(
+          "inline-flex size-5 shrink-0 cursor-pointer items-center justify-center rounded-full border border-muted-foreground/50 bg-background text-[11px] font-semibold text-muted-foreground transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring data-[popup-open]:border-primary data-[popup-open]:bg-primary data-[popup-open]:text-primary-foreground",
+          className
+        ),
+        children: "?"
+      }
+    ),
+    /* @__PURE__ */ jsx5(PopoverPrimitive.Portal, { children: /* @__PURE__ */ jsx5(PopoverPrimitive.Positioner, { side: "bottom", align: "start", sideOffset: 8, className: "isolate z-50", children: /* @__PURE__ */ jsxs3(
+      PopoverPrimitive.Popup,
+      {
+        "data-slot": "field-help",
+        className: "w-[420px] max-w-[calc(100vw-32px)] origin-(--transform-origin) rounded-xl bg-popover p-4 text-popover-foreground shadow-lg ring-1 ring-foreground/10 outline-none duration-100 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95",
+        children: [
+          /* @__PURE__ */ jsxs3("div", { className: "flex items-start justify-between gap-3", children: [
+            /* @__PURE__ */ jsxs3("div", { children: [
+              /* @__PURE__ */ jsx5(PopoverPrimitive.Title, { className: "text-sm font-semibold", children: guia.titulo }),
+              /* @__PURE__ */ jsx5("p", { className: "mt-0.5 text-xs text-muted-foreground", children: guia.subtitulo })
+            ] }),
+            /* @__PURE__ */ jsx5(
+              PopoverPrimitive.Close,
+              {
+                "aria-label": "Fechar",
+                className: "cursor-pointer rounded p-0.5 text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                children: /* @__PURE__ */ jsx5(X, { className: "size-4", "aria-hidden": "true" })
+              }
+            )
+          ] }),
+          /* @__PURE__ */ jsx5("div", { className: "mt-3 flex gap-1", "aria-label": `Camada: ${camada?.nome}`, children: CAMADAS_CONTEUDO.map((c) => /* @__PURE__ */ jsx5(
+            "span",
+            {
+              className: cn(
+                "flex-1 rounded py-1 text-center text-[11px] font-semibold",
+                c.id === guia.camada ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+              ),
+              children: c.nome
+            },
+            c.id
+          )) }),
+          /* @__PURE__ */ jsxs3("div", { className: "mt-3 grid grid-cols-2 gap-3 text-xs leading-relaxed", children: [
+            /* @__PURE__ */ jsxs3("div", { children: [
+              /* @__PURE__ */ jsxs3("div", { className: "flex items-center gap-1 font-semibold text-teal-700 dark:text-teal-400", children: [
+                /* @__PURE__ */ jsx5(Check, { className: "size-3.5", strokeWidth: 2.5, "aria-hidden": "true" }),
+                "Vai aqui"
+              ] }),
+              /* @__PURE__ */ jsx5("p", { className: "mt-1 text-foreground/80", children: guia.vai })
+            ] }),
+            /* @__PURE__ */ jsxs3("div", { children: [
+              /* @__PURE__ */ jsxs3("div", { className: "flex items-center gap-1 font-semibold text-orange-800 dark:text-orange-400", children: [
+                /* @__PURE__ */ jsx5(X, { className: "size-3.5", strokeWidth: 2.5, "aria-hidden": "true" }),
+                "N\xE3o vai aqui"
+              ] }),
+              /* @__PURE__ */ jsx5("p", { className: "mt-1 text-foreground/80", children: guia.naoVai })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxs3("div", { className: "mt-3 flex flex-col gap-2 text-xs leading-relaxed", children: [
+            /* @__PURE__ */ jsxs3("div", { className: "rounded-lg border border-teal-200 bg-teal-50 px-3 py-2 dark:border-teal-900 dark:bg-teal-950/40", children: [
+              /* @__PURE__ */ jsx5("div", { className: "text-[10px] font-bold uppercase tracking-wide text-teal-800 dark:text-teal-400", children: "Bom exemplo" }),
+              /* @__PURE__ */ jsxs3("p", { children: [
+                "\u201C",
+                guia.bom,
+                "\u201D"
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxs3("div", { className: "rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 dark:border-orange-900 dark:bg-orange-950/40", children: [
+              /* @__PURE__ */ jsx5("div", { className: "text-[10px] font-bold uppercase tracking-wide text-orange-800 dark:text-orange-400", children: "Confunde a IA" }),
+              /* @__PURE__ */ jsxs3("p", { children: [
+                "\u201C",
+                guia.ruim,
+                "\u201D"
+              ] }),
+              /* @__PURE__ */ jsx5("p", { className: "mt-1 text-muted-foreground", children: guia.porqueRuim })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxs3("div", { className: "mt-3 flex items-center justify-between gap-3 border-t border-border pt-3 text-xs", children: [
+            /* @__PURE__ */ jsxs3("span", { className: "text-muted-foreground", children: [
+              "Na d\xFAvida: ",
+              camada?.pergunta.toLowerCase()
+            ] }),
+            manualHref && /* @__PURE__ */ jsx5("a", { href: manualHref, className: "shrink-0 font-semibold text-primary hover:underline", children: "Ver no manual \u2192" })
+          ] })
+        ]
+      }
+    ) }) })
+  ] });
+}
+
 // src/components/input.tsx
 import { Input as InputPrimitive } from "@base-ui/react/input";
-import { jsx as jsx5 } from "react/jsx-runtime";
+import { jsx as jsx6 } from "react/jsx-runtime";
 function Input({ className, type, ...props }) {
-  return /* @__PURE__ */ jsx5(
+  return /* @__PURE__ */ jsx6(
     InputPrimitive,
     {
       type,
@@ -391,9 +599,9 @@ function Input({ className, type, ...props }) {
 }
 
 // src/components/label.tsx
-import { jsx as jsx6 } from "react/jsx-runtime";
+import { jsx as jsx7 } from "react/jsx-runtime";
 function Label({ className, ...props }) {
-  return /* @__PURE__ */ jsx6(
+  return /* @__PURE__ */ jsx7(
     "label",
     {
       "data-slot": "label",
@@ -407,13 +615,13 @@ function Label({ className, ...props }) {
 }
 
 // src/components/popover.tsx
-import { Popover as PopoverPrimitive } from "@base-ui/react/popover";
-import { jsx as jsx7 } from "react/jsx-runtime";
+import { Popover as PopoverPrimitive2 } from "@base-ui/react/popover";
+import { jsx as jsx8 } from "react/jsx-runtime";
 function Popover({ ...props }) {
-  return /* @__PURE__ */ jsx7(PopoverPrimitive.Root, { "data-slot": "popover", ...props });
+  return /* @__PURE__ */ jsx8(PopoverPrimitive2.Root, { "data-slot": "popover", ...props });
 }
 function PopoverTrigger({ ...props }) {
-  return /* @__PURE__ */ jsx7(PopoverPrimitive.Trigger, { "data-slot": "popover-trigger", ...props });
+  return /* @__PURE__ */ jsx8(PopoverPrimitive2.Trigger, { "data-slot": "popover-trigger", ...props });
 }
 function PopoverContent({
   className,
@@ -423,16 +631,16 @@ function PopoverContent({
   alignOffset = 0,
   ...props
 }) {
-  return /* @__PURE__ */ jsx7(PopoverPrimitive.Portal, { children: /* @__PURE__ */ jsx7(
-    PopoverPrimitive.Positioner,
+  return /* @__PURE__ */ jsx8(PopoverPrimitive2.Portal, { children: /* @__PURE__ */ jsx8(
+    PopoverPrimitive2.Positioner,
     {
       side,
       sideOffset,
       align,
       alignOffset,
       className: "isolate z-50",
-      children: /* @__PURE__ */ jsx7(
-        PopoverPrimitive.Popup,
+      children: /* @__PURE__ */ jsx8(
+        PopoverPrimitive2.Popup,
         {
           "data-slot": "popover-content",
           className: cn(
@@ -450,7 +658,7 @@ function PopoverContent({
 import * as React from "react";
 import { Select as SelectPrimitive } from "@base-ui/react/select";
 import { ChevronDownIcon, CheckIcon as CheckIcon2, ChevronUpIcon } from "lucide-react";
-import { jsx as jsx8, jsxs as jsxs3 } from "react/jsx-runtime";
+import { jsx as jsx9, jsxs as jsxs4 } from "react/jsx-runtime";
 function itemsFromChildren(children) {
   const items = [];
   React.Children.forEach(children, (child) => {
@@ -468,10 +676,10 @@ function itemsFromChildren(children) {
 }
 function Select({ children, ...props }) {
   const items = React.useMemo(() => itemsFromChildren(children), [children]);
-  return /* @__PURE__ */ jsx8(SelectPrimitive.Root, { items, ...props, children });
+  return /* @__PURE__ */ jsx9(SelectPrimitive.Root, { items, ...props, children });
 }
 function SelectGroup({ className, ...props }) {
-  return /* @__PURE__ */ jsx8(
+  return /* @__PURE__ */ jsx9(
     SelectPrimitive.Group,
     {
       "data-slot": "select-group",
@@ -481,7 +689,7 @@ function SelectGroup({ className, ...props }) {
   );
 }
 function SelectValue({ className, ...props }) {
-  return /* @__PURE__ */ jsx8(
+  return /* @__PURE__ */ jsx9(
     SelectPrimitive.Value,
     {
       "data-slot": "select-value",
@@ -496,7 +704,7 @@ function SelectTrigger({
   children,
   ...props
 }) {
-  return /* @__PURE__ */ jsxs3(
+  return /* @__PURE__ */ jsxs4(
     SelectPrimitive.Trigger,
     {
       "data-slot": "select-trigger",
@@ -508,10 +716,10 @@ function SelectTrigger({
       ...props,
       children: [
         children,
-        /* @__PURE__ */ jsx8(
+        /* @__PURE__ */ jsx9(
           SelectPrimitive.Icon,
           {
-            render: /* @__PURE__ */ jsx8(ChevronDownIcon, { className: "pointer-events-none size-4 text-muted-foreground" })
+            render: /* @__PURE__ */ jsx9(ChevronDownIcon, { className: "pointer-events-none size-4 text-muted-foreground" })
           }
         )
       ]
@@ -528,7 +736,7 @@ function SelectContent({
   alignItemWithTrigger = true,
   ...props
 }) {
-  return /* @__PURE__ */ jsx8(SelectPrimitive.Portal, { children: /* @__PURE__ */ jsx8(
+  return /* @__PURE__ */ jsx9(SelectPrimitive.Portal, { children: /* @__PURE__ */ jsx9(
     SelectPrimitive.Positioner,
     {
       side,
@@ -537,7 +745,7 @@ function SelectContent({
       alignOffset,
       alignItemWithTrigger,
       className: "isolate z-50",
-      children: /* @__PURE__ */ jsxs3(
+      children: /* @__PURE__ */ jsxs4(
         SelectPrimitive.Popup,
         {
           "data-slot": "select-content",
@@ -545,9 +753,9 @@ function SelectContent({
           className: cn("relative isolate z-50 max-h-(--available-height) w-(--anchor-width) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-popover text-popover-foreground shadow-md ring-1 ring-foreground/10 duration-100 data-[align-trigger=true]:animate-none data-[side=bottom]:slide-in-from-top-2 data-[side=inline-end]:slide-in-from-left-2 data-[side=inline-start]:slide-in-from-right-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95", className),
           ...props,
           children: [
-            /* @__PURE__ */ jsx8(SelectScrollUpButton, {}),
-            /* @__PURE__ */ jsx8(SelectPrimitive.List, { children }),
-            /* @__PURE__ */ jsx8(SelectScrollDownButton, {})
+            /* @__PURE__ */ jsx9(SelectScrollUpButton, {}),
+            /* @__PURE__ */ jsx9(SelectPrimitive.List, { children }),
+            /* @__PURE__ */ jsx9(SelectScrollDownButton, {})
           ]
         }
       )
@@ -558,7 +766,7 @@ function SelectLabel({
   className,
   ...props
 }) {
-  return /* @__PURE__ */ jsx8(
+  return /* @__PURE__ */ jsx9(
     SelectPrimitive.GroupLabel,
     {
       "data-slot": "select-label",
@@ -572,7 +780,7 @@ function SelectItem({
   children,
   ...props
 }) {
-  return /* @__PURE__ */ jsxs3(
+  return /* @__PURE__ */ jsxs4(
     SelectPrimitive.Item,
     {
       "data-slot": "select-item",
@@ -582,12 +790,12 @@ function SelectItem({
       ),
       ...props,
       children: [
-        /* @__PURE__ */ jsx8(SelectPrimitive.ItemText, { className: "flex flex-1 shrink-0 gap-2 whitespace-nowrap", children }),
-        /* @__PURE__ */ jsx8(
+        /* @__PURE__ */ jsx9(SelectPrimitive.ItemText, { className: "flex flex-1 shrink-0 gap-2 whitespace-nowrap", children }),
+        /* @__PURE__ */ jsx9(
           SelectPrimitive.ItemIndicator,
           {
-            render: /* @__PURE__ */ jsx8("span", { className: "pointer-events-none absolute right-2 flex size-4 items-center justify-center" }),
-            children: /* @__PURE__ */ jsx8(CheckIcon2, { className: "pointer-events-none" })
+            render: /* @__PURE__ */ jsx9("span", { className: "pointer-events-none absolute right-2 flex size-4 items-center justify-center" }),
+            children: /* @__PURE__ */ jsx9(CheckIcon2, { className: "pointer-events-none" })
           }
         )
       ]
@@ -598,7 +806,7 @@ function SelectSeparator({
   className,
   ...props
 }) {
-  return /* @__PURE__ */ jsx8(
+  return /* @__PURE__ */ jsx9(
     SelectPrimitive.Separator,
     {
       "data-slot": "select-separator",
@@ -611,7 +819,7 @@ function SelectScrollUpButton({
   className,
   ...props
 }) {
-  return /* @__PURE__ */ jsx8(
+  return /* @__PURE__ */ jsx9(
     SelectPrimitive.ScrollUpArrow,
     {
       "data-slot": "select-scroll-up-button",
@@ -620,7 +828,7 @@ function SelectScrollUpButton({
         className
       ),
       ...props,
-      children: /* @__PURE__ */ jsx8(
+      children: /* @__PURE__ */ jsx9(
         ChevronUpIcon,
         {}
       )
@@ -631,7 +839,7 @@ function SelectScrollDownButton({
   className,
   ...props
 }) {
-  return /* @__PURE__ */ jsx8(
+  return /* @__PURE__ */ jsx9(
     SelectPrimitive.ScrollDownArrow,
     {
       "data-slot": "select-scroll-down-button",
@@ -640,7 +848,7 @@ function SelectScrollDownButton({
         className
       ),
       ...props,
-      children: /* @__PURE__ */ jsx8(
+      children: /* @__PURE__ */ jsx9(
         ChevronDownIcon,
         {}
       )
@@ -650,13 +858,13 @@ function SelectScrollDownButton({
 
 // src/components/separator.tsx
 import { Separator as SeparatorPrimitive } from "@base-ui/react/separator";
-import { jsx as jsx9 } from "react/jsx-runtime";
+import { jsx as jsx10 } from "react/jsx-runtime";
 function Separator({
   className,
   orientation = "horizontal",
   ...props
 }) {
-  return /* @__PURE__ */ jsx9(
+  return /* @__PURE__ */ jsx10(
     SeparatorPrimitive,
     {
       "data-slot": "separator",
@@ -671,9 +879,9 @@ function Separator({
 }
 
 // src/components/sidebar-app-switcher.tsx
-import { Fragment, jsx as jsx10, jsxs as jsxs4 } from "react/jsx-runtime";
+import { Fragment, jsx as jsx11, jsxs as jsxs5 } from "react/jsx-runtime";
 function DefaultSystemIcon() {
-  return /* @__PURE__ */ jsxs4(
+  return /* @__PURE__ */ jsxs5(
     "svg",
     {
       viewBox: "0 0 24 24",
@@ -681,16 +889,16 @@ function DefaultSystemIcon() {
       "aria-hidden": "true",
       className: "size-4",
       children: [
-        /* @__PURE__ */ jsx10("rect", { x: "3", y: "3", width: "7", height: "7", rx: "1.5", stroke: "currentColor", strokeWidth: "1.5" }),
-        /* @__PURE__ */ jsx10("rect", { x: "14", y: "3", width: "7", height: "7", rx: "1.5", stroke: "currentColor", strokeWidth: "1.5" }),
-        /* @__PURE__ */ jsx10("rect", { x: "3", y: "14", width: "7", height: "7", rx: "1.5", stroke: "currentColor", strokeWidth: "1.5" }),
-        /* @__PURE__ */ jsx10("rect", { x: "14", y: "14", width: "7", height: "7", rx: "1.5", stroke: "currentColor", strokeWidth: "1.5" })
+        /* @__PURE__ */ jsx11("rect", { x: "3", y: "3", width: "7", height: "7", rx: "1.5", stroke: "currentColor", strokeWidth: "1.5" }),
+        /* @__PURE__ */ jsx11("rect", { x: "14", y: "3", width: "7", height: "7", rx: "1.5", stroke: "currentColor", strokeWidth: "1.5" }),
+        /* @__PURE__ */ jsx11("rect", { x: "3", y: "14", width: "7", height: "7", rx: "1.5", stroke: "currentColor", strokeWidth: "1.5" }),
+        /* @__PURE__ */ jsx11("rect", { x: "14", y: "14", width: "7", height: "7", rx: "1.5", stroke: "currentColor", strokeWidth: "1.5" })
       ]
     }
   );
 }
 function ChevronDownIcon2({ className }) {
-  return /* @__PURE__ */ jsx10("svg", { viewBox: "0 0 24 24", fill: "none", "aria-hidden": "true", className, children: /* @__PURE__ */ jsx10("path", { d: "M6 9l6 6 6-6", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }) });
+  return /* @__PURE__ */ jsx11("svg", { viewBox: "0 0 24 24", fill: "none", "aria-hidden": "true", className, children: /* @__PURE__ */ jsx11("path", { d: "M6 9l6 6 6-6", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }) });
 }
 function AppSwitcher({
   appName,
@@ -700,8 +908,8 @@ function AppSwitcher({
   className,
   onSystemNavigate
 }) {
-  return /* @__PURE__ */ jsxs4(Popover, { children: [
-    /* @__PURE__ */ jsxs4(
+  return /* @__PURE__ */ jsxs5(Popover, { children: [
+    /* @__PURE__ */ jsxs5(
       PopoverTrigger,
       {
         className: cn(
@@ -709,32 +917,32 @@ function AppSwitcher({
           className
         ),
         children: [
-          /* @__PURE__ */ jsxs4("div", { children: [
-            /* @__PURE__ */ jsx10("p", { className: "text-xl font-semibold text-foreground", children: appName }),
-            /* @__PURE__ */ jsx10("p", { className: "text-sm text-primary", children: "by Sai Creative" })
+          /* @__PURE__ */ jsxs5("div", { children: [
+            /* @__PURE__ */ jsx11("p", { className: "text-xl font-semibold text-foreground", children: appName }),
+            /* @__PURE__ */ jsx11("p", { className: "text-sm text-primary", children: "by Sai Creative" })
           ] }),
-          /* @__PURE__ */ jsx10(ChevronDownIcon2, { className: "size-4 shrink-0 text-muted-foreground" })
+          /* @__PURE__ */ jsx11(ChevronDownIcon2, { className: "size-4 shrink-0 text-muted-foreground" })
         ]
       }
     ),
-    /* @__PURE__ */ jsxs4(PopoverContent, { children: [
-      /* @__PURE__ */ jsx10("p", { className: "px-2 py-1.5 text-xs font-medium text-muted-foreground", children: "Sistemas Sai Creative" }),
-      loading ? /* @__PURE__ */ jsx10("p", { className: "px-2 py-1.5 text-sm text-muted-foreground", children: "Carregando\u2026" }) : systems.map((system) => {
-        const icon = systemIcons?.[system.key] ?? /* @__PURE__ */ jsx10(DefaultSystemIcon, {});
+    /* @__PURE__ */ jsxs5(PopoverContent, { children: [
+      /* @__PURE__ */ jsx11("p", { className: "px-2 py-1.5 text-xs font-medium text-muted-foreground", children: "Sistemas Sai Creative" }),
+      loading ? /* @__PURE__ */ jsx11("p", { className: "px-2 py-1.5 text-sm text-muted-foreground", children: "Carregando\u2026" }) : systems.map((system) => {
+        const icon = systemIcons?.[system.key] ?? /* @__PURE__ */ jsx11(DefaultSystemIcon, {});
         const statusLabel = system.em_construcao ? "Em constru\xE7\xE3o" : !system.url ? "Em breve" : null;
-        const itemContent = /* @__PURE__ */ jsxs4(Fragment, { children: [
-          /* @__PURE__ */ jsx10("span", { className: "flex size-9 shrink-0 items-center justify-center rounded-md bg-muted text-foreground", children: icon }),
-          /* @__PURE__ */ jsxs4("span", { className: "flex flex-col", children: [
-            /* @__PURE__ */ jsxs4("span", { className: "flex items-center gap-1.5 text-sm font-medium text-foreground", children: [
+        const itemContent = /* @__PURE__ */ jsxs5(Fragment, { children: [
+          /* @__PURE__ */ jsx11("span", { className: "flex size-9 shrink-0 items-center justify-center rounded-md bg-muted text-foreground", children: icon }),
+          /* @__PURE__ */ jsxs5("span", { className: "flex flex-col", children: [
+            /* @__PURE__ */ jsxs5("span", { className: "flex items-center gap-1.5 text-sm font-medium text-foreground", children: [
               system.label,
-              system.novo && /* @__PURE__ */ jsx10(Badge, { className: "h-4 px-1.5 text-[10px]", children: "Novo" }),
-              system.beta && /* @__PURE__ */ jsx10(Badge, { variant: "outline", className: "h-4 px-1.5 text-[10px]", children: "Beta" })
+              system.novo && /* @__PURE__ */ jsx11(Badge, { className: "h-4 px-1.5 text-[10px]", children: "Novo" }),
+              system.beta && /* @__PURE__ */ jsx11(Badge, { variant: "outline", className: "h-4 px-1.5 text-[10px]", children: "Beta" })
             ] }),
-            statusLabel && /* @__PURE__ */ jsx10("span", { className: "text-xs text-muted-foreground", children: statusLabel })
+            statusLabel && /* @__PURE__ */ jsx11("span", { className: "text-xs text-muted-foreground", children: statusLabel })
           ] })
         ] });
         if (statusLabel) {
-          return /* @__PURE__ */ jsx10(
+          return /* @__PURE__ */ jsx11(
             "div",
             {
               "aria-disabled": "true",
@@ -744,7 +952,7 @@ function AppSwitcher({
             system.key
           );
         }
-        return /* @__PURE__ */ jsx10(
+        return /* @__PURE__ */ jsx11(
           "a",
           {
             href: system.url ?? void 0,
@@ -761,17 +969,17 @@ function AppSwitcher({
 
 // src/components/sidebar-brand-selector.tsx
 import * as React2 from "react";
-import { jsx as jsx11, jsxs as jsxs5 } from "react/jsx-runtime";
+import { jsx as jsx12, jsxs as jsxs6 } from "react/jsx-runtime";
 function ChevronDownIcon3({ className }) {
-  return /* @__PURE__ */ jsx11("svg", { viewBox: "0 0 24 24", fill: "none", "aria-hidden": "true", className, children: /* @__PURE__ */ jsx11("path", { d: "M6 9l6 6 6-6", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }) });
+  return /* @__PURE__ */ jsx12("svg", { viewBox: "0 0 24 24", fill: "none", "aria-hidden": "true", className, children: /* @__PURE__ */ jsx12("path", { d: "M6 9l6 6 6-6", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round" }) });
 }
 function CheckIcon3({ className }) {
-  return /* @__PURE__ */ jsx11("svg", { viewBox: "0 0 24 24", fill: "none", "aria-hidden": "true", className, children: /* @__PURE__ */ jsx11("path", { d: "M5 13l4 4L19 7", stroke: "currentColor", strokeWidth: "2.5", strokeLinecap: "round", strokeLinejoin: "round" }) });
+  return /* @__PURE__ */ jsx12("svg", { viewBox: "0 0 24 24", fill: "none", "aria-hidden": "true", className, children: /* @__PURE__ */ jsx12("path", { d: "M5 13l4 4L19 7", stroke: "currentColor", strokeWidth: "2.5", strokeLinecap: "round", strokeLinejoin: "round" }) });
 }
 function BrandThumb({ logoUrl }) {
-  return /* @__PURE__ */ jsx11("div", { className: "size-9 shrink-0 overflow-hidden rounded-md bg-muted", children: logoUrl ? (
+  return /* @__PURE__ */ jsx12("div", { className: "size-9 shrink-0 overflow-hidden rounded-md bg-muted", children: logoUrl ? (
     // eslint-disable-next-line @next/next/no-img-element
-    /* @__PURE__ */ jsx11("img", { src: logoUrl, alt: "", className: "size-full object-cover" })
+    /* @__PURE__ */ jsx12("img", { src: logoUrl, alt: "", className: "size-full object-cover" })
   ) : null });
 }
 function SidebarBrandSelector({
@@ -789,8 +997,8 @@ function SidebarBrandSelector({
     onSelect(id);
     setOpen(false);
   }
-  return /* @__PURE__ */ jsxs5(Popover, { open, onOpenChange: setOpen, children: [
-    /* @__PURE__ */ jsxs5(
+  return /* @__PURE__ */ jsxs6(Popover, { open, onOpenChange: setOpen, children: [
+    /* @__PURE__ */ jsxs6(
       PopoverTrigger,
       {
         className: cn(
@@ -798,19 +1006,19 @@ function SidebarBrandSelector({
           className
         ),
         children: [
-          /* @__PURE__ */ jsx11(BrandThumb, { logoUrl: selectedBrand?.logoUrl }),
-          /* @__PURE__ */ jsxs5("div", { className: "flex min-w-0 flex-1 flex-col items-start", children: [
-            /* @__PURE__ */ jsx11("span", { className: "text-xs text-muted-foreground", children: "Perfil" }),
-            /* @__PURE__ */ jsx11("span", { className: "w-full truncate text-left text-base font-semibold text-foreground", children: loading ? "Carregando\u2026" : selectedBrand?.name ?? "Selecione uma marca" })
+          /* @__PURE__ */ jsx12(BrandThumb, { logoUrl: selectedBrand?.logoUrl }),
+          /* @__PURE__ */ jsxs6("div", { className: "flex min-w-0 flex-1 flex-col items-start", children: [
+            /* @__PURE__ */ jsx12("span", { className: "text-xs text-muted-foreground", children: "Perfil" }),
+            /* @__PURE__ */ jsx12("span", { className: "w-full truncate text-left text-base font-semibold text-foreground", children: loading ? "Carregando\u2026" : selectedBrand?.name ?? "Selecione uma marca" })
           ] }),
-          /* @__PURE__ */ jsx11(ChevronDownIcon3, { className: "size-4 shrink-0 text-muted-foreground" })
+          /* @__PURE__ */ jsx12(ChevronDownIcon3, { className: "size-4 shrink-0 text-muted-foreground" })
         ]
       }
     ),
-    /* @__PURE__ */ jsxs5(PopoverContent, { children: [
+    /* @__PURE__ */ jsxs6(PopoverContent, { children: [
       brands.map((brand) => {
         const isSelected = brand.id === selectedBrandId;
-        return /* @__PURE__ */ jsxs5(
+        return /* @__PURE__ */ jsxs6(
           "div",
           {
             role: "option",
@@ -818,10 +1026,10 @@ function SidebarBrandSelector({
             onClick: () => handleSelect(brand.id),
             className: "group flex cursor-pointer items-center gap-3 rounded-md px-2 py-2 transition-colors hover:bg-accent",
             children: [
-              /* @__PURE__ */ jsx11(BrandThumb, { logoUrl: brand.logoUrl }),
-              /* @__PURE__ */ jsx11("span", { className: "min-w-0 flex-1 truncate text-sm font-medium text-foreground", children: brand.name }),
+              /* @__PURE__ */ jsx12(BrandThumb, { logoUrl: brand.logoUrl }),
+              /* @__PURE__ */ jsx12("span", { className: "min-w-0 flex-1 truncate text-sm font-medium text-foreground", children: brand.name }),
               renderBrandExtra?.(brand),
-              isSelected && /* @__PURE__ */ jsx11(CheckIcon3, { className: "size-4 shrink-0 text-primary" })
+              isSelected && /* @__PURE__ */ jsx12(CheckIcon3, { className: "size-4 shrink-0 text-primary" })
             ]
           },
           brand.id
@@ -833,7 +1041,7 @@ function SidebarBrandSelector({
 }
 
 // src/components/sidebar-nav.tsx
-import { jsx as jsx12, jsxs as jsxs6 } from "react/jsx-runtime";
+import { jsx as jsx13, jsxs as jsxs7 } from "react/jsx-runtime";
 function SidebarNavItem({
   href,
   label,
@@ -846,7 +1054,7 @@ function SidebarNavItem({
   className
 }) {
   const Comp = !disabled && linkComponent ? linkComponent : "a";
-  return /* @__PURE__ */ jsxs6(
+  return /* @__PURE__ */ jsxs7(
     Comp,
     {
       href: disabled ? void 0 : href,
@@ -860,24 +1068,24 @@ function SidebarNavItem({
         className
       ),
       children: [
-        /* @__PURE__ */ jsx12("span", { className: "flex size-4 shrink-0 items-center justify-center [&_svg]:size-4", children: icon }),
-        /* @__PURE__ */ jsx12("span", { className: "flex-1 truncate", children: label }),
+        /* @__PURE__ */ jsx13("span", { className: "flex size-4 shrink-0 items-center justify-center [&_svg]:size-4", children: icon }),
+        /* @__PURE__ */ jsx13("span", { className: "flex-1 truncate", children: label }),
         statusIndicator
       ]
     }
   );
 }
 function SidebarNavSection({ label, children, className }) {
-  return /* @__PURE__ */ jsxs6("div", { className: cn("flex flex-col gap-1 px-4 py-4", className), children: [
-    label && /* @__PURE__ */ jsx12("p", { className: "px-3 pb-1 text-xs font-medium tracking-wide text-muted-foreground uppercase", children: label }),
-    /* @__PURE__ */ jsx12("nav", { className: "flex flex-col gap-1", children })
+  return /* @__PURE__ */ jsxs7("div", { className: cn("flex flex-col gap-1 px-4 py-4", className), children: [
+    label && /* @__PURE__ */ jsx13("p", { className: "px-3 pb-1 text-xs font-medium tracking-wide text-muted-foreground uppercase", children: label }),
+    /* @__PURE__ */ jsx13("nav", { className: "flex flex-col gap-1", children })
   ] });
 }
 
 // src/components/sidebar-shell.tsx
-import { jsx as jsx13, jsxs as jsxs7 } from "react/jsx-runtime";
+import { jsx as jsx14, jsxs as jsxs8 } from "react/jsx-runtime";
 function SidebarShell({ children, footer, className }) {
-  return /* @__PURE__ */ jsxs7(
+  return /* @__PURE__ */ jsxs8(
     "aside",
     {
       className: cn(
@@ -885,8 +1093,8 @@ function SidebarShell({ children, footer, className }) {
         className
       ),
       children: [
-        /* @__PURE__ */ jsx13("div", { className: "flex-1 overflow-y-auto", children }),
-        footer && /* @__PURE__ */ jsx13("div", { className: "border-t border-sidebar-border", children: footer })
+        /* @__PURE__ */ jsx14("div", { className: "flex-1 overflow-y-auto", children }),
+        footer && /* @__PURE__ */ jsx14("div", { className: "border-t border-sidebar-border", children: footer })
       ]
     }
   );
@@ -899,13 +1107,13 @@ import { LogOut } from "lucide-react";
 import * as React3 from "react";
 import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
-import { jsx as jsx14 } from "react/jsx-runtime";
+import { jsx as jsx15 } from "react/jsx-runtime";
 function ThemeToggle({ className }) {
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = React3.useState(false);
   React3.useEffect(() => setMounted(true), []);
   if (!mounted) {
-    return /* @__PURE__ */ jsx14(
+    return /* @__PURE__ */ jsx15(
       Button,
       {
         type: "button",
@@ -914,12 +1122,12 @@ function ThemeToggle({ className }) {
         "aria-label": "Alternar tema",
         disabled: true,
         className,
-        children: /* @__PURE__ */ jsx14(Sun, { className: "size-4" })
+        children: /* @__PURE__ */ jsx15(Sun, { className: "size-4" })
       }
     );
   }
   const isDark = resolvedTheme === "dark";
-  return /* @__PURE__ */ jsx14(
+  return /* @__PURE__ */ jsx15(
     Button,
     {
       type: "button",
@@ -928,39 +1136,39 @@ function ThemeToggle({ className }) {
       "aria-label": isDark ? "Mudar para modo claro" : "Mudar para modo escuro",
       onClick: () => setTheme(isDark ? "light" : "dark"),
       className,
-      children: isDark ? /* @__PURE__ */ jsx14(Sun, { className: "size-4" }) : /* @__PURE__ */ jsx14(Moon, { className: "size-4" })
+      children: isDark ? /* @__PURE__ */ jsx15(Sun, { className: "size-4" }) : /* @__PURE__ */ jsx15(Moon, { className: "size-4" })
     }
   );
 }
 
 // src/components/sidebar-user-footer.tsx
-import { Fragment as Fragment2, jsx as jsx15, jsxs as jsxs8 } from "react/jsx-runtime";
+import { Fragment as Fragment2, jsx as jsx16, jsxs as jsxs9 } from "react/jsx-runtime";
 function SidebarUserFooter({ email, name, role, onLogout, className }) {
   const displayName = name?.trim() || null;
   const initials = displayName ? displayName.split(/\s+/).slice(0, 2).map((part) => part[0]).join("").toUpperCase() : email ? email.slice(0, 2).toUpperCase() : "??";
-  return /* @__PURE__ */ jsxs8("div", { className: cn("flex flex-col gap-1 px-2 py-2", className), children: [
-    /* @__PURE__ */ jsxs8("div", { className: "flex items-center gap-2 rounded-md px-2 py-1.5", children: [
-      email ? /* @__PURE__ */ jsxs8(Fragment2, { children: [
-        /* @__PURE__ */ jsx15("div", { className: "flex size-7 shrink-0 items-center justify-center rounded-full bg-sidebar-primary/15 text-xs font-semibold text-sidebar-primary", children: initials }),
-        /* @__PURE__ */ jsxs8("div", { className: "min-w-0 flex-1", children: [
-          displayName ? /* @__PURE__ */ jsxs8(Fragment2, { children: [
-            /* @__PURE__ */ jsx15("p", { className: "truncate text-sm font-medium text-sidebar-foreground", children: displayName }),
-            /* @__PURE__ */ jsx15("p", { className: "truncate text-xs text-muted-foreground", title: email, children: email })
-          ] }) : /* @__PURE__ */ jsx15("p", { className: "truncate text-xs font-medium text-sidebar-foreground", children: email }),
-          role && /* @__PURE__ */ jsx15("p", { className: "text-xs capitalize text-muted-foreground", children: role })
+  return /* @__PURE__ */ jsxs9("div", { className: cn("flex flex-col gap-1 px-2 py-2", className), children: [
+    /* @__PURE__ */ jsxs9("div", { className: "flex items-center gap-2 rounded-md px-2 py-1.5", children: [
+      email ? /* @__PURE__ */ jsxs9(Fragment2, { children: [
+        /* @__PURE__ */ jsx16("div", { className: "flex size-7 shrink-0 items-center justify-center rounded-full bg-sidebar-primary/15 text-xs font-semibold text-sidebar-primary", children: initials }),
+        /* @__PURE__ */ jsxs9("div", { className: "min-w-0 flex-1", children: [
+          displayName ? /* @__PURE__ */ jsxs9(Fragment2, { children: [
+            /* @__PURE__ */ jsx16("p", { className: "truncate text-sm font-medium text-sidebar-foreground", children: displayName }),
+            /* @__PURE__ */ jsx16("p", { className: "truncate text-xs text-muted-foreground", title: email, children: email })
+          ] }) : /* @__PURE__ */ jsx16("p", { className: "truncate text-xs font-medium text-sidebar-foreground", children: email }),
+          role && /* @__PURE__ */ jsx16("p", { className: "text-xs capitalize text-muted-foreground", children: role })
         ] })
-      ] }) : /* @__PURE__ */ jsx15("div", { className: "flex-1" }),
-      /* @__PURE__ */ jsx15(ThemeToggle, {})
+      ] }) : /* @__PURE__ */ jsx16("div", { className: "flex-1" }),
+      /* @__PURE__ */ jsx16(ThemeToggle, {})
     ] }),
-    /* @__PURE__ */ jsxs8(
+    /* @__PURE__ */ jsxs9(
       "button",
       {
         type: "button",
         onClick: onLogout,
         className: "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus:outline-none",
         children: [
-          /* @__PURE__ */ jsx15(LogOut, { className: "size-4 shrink-0" }),
-          /* @__PURE__ */ jsx15("span", { children: "Sair" })
+          /* @__PURE__ */ jsx16(LogOut, { className: "size-4 shrink-0" }),
+          /* @__PURE__ */ jsx16("span", { children: "Sair" })
         ]
       }
     )
@@ -968,9 +1176,9 @@ function SidebarUserFooter({ email, name, role, onLogout, className }) {
 }
 
 // src/components/skeleton.tsx
-import { jsx as jsx16 } from "react/jsx-runtime";
+import { jsx as jsx17 } from "react/jsx-runtime";
 function Skeleton({ className, ...props }) {
-  return /* @__PURE__ */ jsx16(
+  return /* @__PURE__ */ jsx17(
     "div",
     {
       "data-slot": "skeleton",
@@ -984,20 +1192,20 @@ function Skeleton({ className, ...props }) {
 import { useTheme as useTheme2 } from "next-themes";
 import { Toaster as Sonner, toast } from "sonner";
 import { CircleCheckIcon, InfoIcon, TriangleAlertIcon, OctagonXIcon, Loader2Icon } from "lucide-react";
-import { jsx as jsx17 } from "react/jsx-runtime";
+import { jsx as jsx18 } from "react/jsx-runtime";
 var Toaster = ({ ...props }) => {
   const { theme = "system" } = useTheme2();
-  return /* @__PURE__ */ jsx17(
+  return /* @__PURE__ */ jsx18(
     Sonner,
     {
       theme,
       className: "toaster group",
       icons: {
-        success: /* @__PURE__ */ jsx17(CircleCheckIcon, { className: "size-4" }),
-        info: /* @__PURE__ */ jsx17(InfoIcon, { className: "size-4" }),
-        warning: /* @__PURE__ */ jsx17(TriangleAlertIcon, { className: "size-4" }),
-        error: /* @__PURE__ */ jsx17(OctagonXIcon, { className: "size-4" }),
-        loading: /* @__PURE__ */ jsx17(Loader2Icon, { className: "size-4 animate-spin" })
+        success: /* @__PURE__ */ jsx18(CircleCheckIcon, { className: "size-4" }),
+        info: /* @__PURE__ */ jsx18(InfoIcon, { className: "size-4" }),
+        warning: /* @__PURE__ */ jsx18(TriangleAlertIcon, { className: "size-4" }),
+        error: /* @__PURE__ */ jsx18(OctagonXIcon, { className: "size-4" }),
+        loading: /* @__PURE__ */ jsx18(Loader2Icon, { className: "size-4 animate-spin" })
       },
       style: {
         "--normal-bg": "var(--popover)",
@@ -1018,13 +1226,13 @@ var Toaster = ({ ...props }) => {
 // src/components/tabs.tsx
 import { Tabs as TabsPrimitive } from "@base-ui/react/tabs";
 import { cva as cva3 } from "class-variance-authority";
-import { jsx as jsx18 } from "react/jsx-runtime";
+import { jsx as jsx19 } from "react/jsx-runtime";
 function Tabs({
   className,
   orientation = "horizontal",
   ...props
 }) {
-  return /* @__PURE__ */ jsx18(
+  return /* @__PURE__ */ jsx19(
     TabsPrimitive.Root,
     {
       "data-slot": "tabs",
@@ -1056,7 +1264,7 @@ function TabsList({
   variant = "default",
   ...props
 }) {
-  return /* @__PURE__ */ jsx18(
+  return /* @__PURE__ */ jsx19(
     TabsPrimitive.List,
     {
       "data-slot": "tabs-list",
@@ -1067,7 +1275,7 @@ function TabsList({
   );
 }
 function TabsTrigger({ className, ...props }) {
-  return /* @__PURE__ */ jsx18(
+  return /* @__PURE__ */ jsx19(
     TabsPrimitive.Tab,
     {
       "data-slot": "tabs-trigger",
@@ -1083,7 +1291,7 @@ function TabsTrigger({ className, ...props }) {
   );
 }
 function TabsContent({ className, ...props }) {
-  return /* @__PURE__ */ jsx18(
+  return /* @__PURE__ */ jsx19(
     TabsPrimitive.Panel,
     {
       "data-slot": "tabs-content",
@@ -1094,9 +1302,9 @@ function TabsContent({ className, ...props }) {
 }
 
 // src/components/textarea.tsx
-import { jsx as jsx19 } from "react/jsx-runtime";
+import { jsx as jsx20 } from "react/jsx-runtime";
 function Textarea({ className, ...props }) {
-  return /* @__PURE__ */ jsx19(
+  return /* @__PURE__ */ jsx20(
     "textarea",
     {
       "data-slot": "textarea",
@@ -1111,14 +1319,15 @@ function Textarea({ className, ...props }) {
 
 // src/components/theme-provider.tsx
 import { ThemeProvider as NextThemesProvider } from "next-themes";
-import { jsx as jsx20 } from "react/jsx-runtime";
+import { jsx as jsx21 } from "react/jsx-runtime";
 function ThemeProvider({ children, ...props }) {
-  return /* @__PURE__ */ jsx20(NextThemesProvider, { attribute: "class", defaultTheme: "dark", enableSystem: false, ...props, children });
+  return /* @__PURE__ */ jsx21(NextThemesProvider, { attribute: "class", defaultTheme: "dark", enableSystem: false, ...props, children });
 }
 export {
   AppSwitcher,
   Badge,
   Button,
+  CAMADAS_CONTEUDO,
   Card,
   CardAction,
   CardContent,
@@ -1137,6 +1346,8 @@ export {
   DialogPortal,
   DialogTitle,
   DialogTrigger,
+  FieldHelp,
+  GUIA_CAMPOS,
   Input,
   Label,
   Popover,

@@ -54,6 +54,141 @@ declare function DialogFooter({ className, showCloseButton, children, ...props }
 declare function DialogTitle({ className, ...props }: Dialog$1.Title.Props): React$1.JSX.Element;
 declare function DialogDescription({ className, ...props }: Dialog$1.Description.Props): React$1.JSX.Element;
 
+/**
+ * Balão "?" ao lado do nome de um campo de conteúdo: o que vai e o que não
+ * vai nele, um bom exemplo e um que confunde a IA. Abre só no clique.
+ *
+ * O texto mora aqui (GUIA_CAMPOS) para o Brand System, o Briefing System e o
+ * manual do Hub lerem da mesma fonte. Exemplos neutros de propósito: servem
+ * para qualquer marca.
+ */
+type CamadaConteudo = "marca" | "publico" | "momento" | "campanha" | "peca";
+declare const CAMADAS_CONTEUDO: {
+    id: CamadaConteudo;
+    nome: string;
+    pergunta: string;
+}[];
+interface GuiaCampo {
+    titulo: string;
+    subtitulo: string;
+    camada: CamadaConteudo;
+    vai: string;
+    naoVai: string;
+    bom: string;
+    ruim: string;
+    porqueRuim: string;
+}
+declare const GUIA_CAMPOS: {
+    dosDonts: {
+        titulo: string;
+        subtitulo: string;
+        camada: "marca";
+        vai: string;
+        naoVai: string;
+        bom: string;
+        ruim: string;
+        porqueRuim: string;
+    };
+    perfil: {
+        titulo: string;
+        subtitulo: string;
+        camada: "publico";
+        vai: string;
+        naoVai: string;
+        bom: string;
+        ruim: string;
+        porqueRuim: string;
+    };
+    tom: {
+        titulo: string;
+        subtitulo: string;
+        camada: "publico";
+        vai: string;
+        naoVai: string;
+        bom: string;
+        ruim: string;
+        porqueRuim: string;
+    };
+    gatilho: {
+        titulo: string;
+        subtitulo: string;
+        camada: "publico";
+        vai: string;
+        naoVai: string;
+        bom: string;
+        ruim: string;
+        porqueRuim: string;
+    };
+    contexto: {
+        titulo: string;
+        subtitulo: string;
+        camada: "momento";
+        vai: string;
+        naoVai: string;
+        bom: string;
+        ruim: string;
+        porqueRuim: string;
+    };
+    argumento: {
+        titulo: string;
+        subtitulo: string;
+        camada: "momento";
+        vai: string;
+        naoVai: string;
+        bom: string;
+        ruim: string;
+        porqueRuim: string;
+    };
+    condicoes: {
+        titulo: string;
+        subtitulo: string;
+        camada: "momento";
+        vai: string;
+        naoVai: string;
+        bom: string;
+        ruim: string;
+        porqueRuim: string;
+    };
+    overview: {
+        titulo: string;
+        subtitulo: string;
+        camada: "campanha";
+        vai: string;
+        naoVai: string;
+        bom: string;
+        ruim: string;
+        porqueRuim: string;
+    };
+    objetivo: {
+        titulo: string;
+        subtitulo: string;
+        camada: "campanha";
+        vai: string;
+        naoVai: string;
+        bom: string;
+        ruim: string;
+        porqueRuim: string;
+    };
+    foco: {
+        titulo: string;
+        subtitulo: string;
+        camada: "peca";
+        vai: string;
+        naoVai: string;
+        bom: string;
+        ruim: string;
+        porqueRuim: string;
+    };
+};
+type CampoGuiaId = keyof typeof GUIA_CAMPOS;
+interface FieldHelpProps {
+    campo: CampoGuiaId;
+    /** Link "Ver no manual". Sem ele, o link não aparece. */
+    manualHref?: string;
+    className?: string;
+}
+declare function FieldHelp({ campo, manualHref, className }: FieldHelpProps): React$1.JSX.Element;
+
 declare function Input({ className, type, ...props }: React$1.ComponentProps<"input">): React$1.JSX.Element;
 
 declare function Label({ className, ...props }: React$1.ComponentProps<"label">): React$1.JSX.Element;
@@ -279,4 +414,4 @@ declare function ThemeToggle({ className }: ThemeToggleProps): React$1.JSX.Eleme
 
 declare function cn(...inputs: ClassValue[]): string;
 
-export { AppSwitcher, type AppSwitcherProps, Badge, type BrandOption, Button, Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Checkbox, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, Input, Label, Popover, PopoverContent, PopoverTrigger, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, SelectValue, Separator, SidebarBrandSelector, type SidebarBrandSelectorProps, type SidebarLinkComponent, SidebarNavItem, type SidebarNavItemProps, SidebarNavSection, type SidebarNavSectionProps, SidebarShell, type SidebarShellProps, SidebarUserFooter, type SidebarUserFooterProps, Skeleton, type SystemEntry, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, ThemeProvider, ThemeToggle, type ThemeToggleProps, Toaster, badgeVariants, buttonVariants, cn, tabsListVariants };
+export { AppSwitcher, type AppSwitcherProps, Badge, type BrandOption, Button, CAMADAS_CONTEUDO, type CamadaConteudo, type CampoGuiaId, Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, Checkbox, Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogOverlay, DialogPortal, DialogTitle, DialogTrigger, FieldHelp, type FieldHelpProps, GUIA_CAMPOS, type GuiaCampo, Input, Label, Popover, PopoverContent, PopoverTrigger, Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectScrollDownButton, SelectScrollUpButton, SelectSeparator, SelectTrigger, SelectValue, Separator, SidebarBrandSelector, type SidebarBrandSelectorProps, type SidebarLinkComponent, SidebarNavItem, type SidebarNavItemProps, SidebarNavSection, type SidebarNavSectionProps, SidebarShell, type SidebarShellProps, SidebarUserFooter, type SidebarUserFooterProps, Skeleton, type SystemEntry, Tabs, TabsContent, TabsList, TabsTrigger, Textarea, ThemeProvider, ThemeToggle, type ThemeToggleProps, Toaster, badgeVariants, buttonVariants, cn, tabsListVariants };
