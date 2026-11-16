@@ -225,10 +225,18 @@ export const GUIA_CAMPOS = {
 
 export type CampoGuiaId = keyof typeof GUIA_CAMPOS
 
+/** Página do manual no Hub. Cada campo tem âncora com o próprio id (ex.: #overview). */
+export const MANUAL_PREENCHIMENTO_URL = "https://saicreativesystem.vercel.app/manual"
+
+/** Endereço do campo no manual do Hub. */
+export function linkDoManual(campo: CampoGuiaId): string {
+  return `${MANUAL_PREENCHIMENTO_URL}#${campo}`
+}
+
 export interface FieldHelpProps {
   campo: CampoGuiaId
-  /** Link "Ver no manual". Sem ele, o link não aparece. */
-  manualHref?: string
+  /** Link "Ver no manual". Padrão: o campo no manual do Hub; `false` esconde o link. */
+  manualHref?: string | false
   /** Exemplo real da própria marca (ex.: outro produto já validado). Aparece antes dos exemplos neutros. */
   exemploDaMarca?: { texto: string; origem: string }
   className?: string
@@ -236,6 +244,7 @@ export interface FieldHelpProps {
 
 function FieldHelp({ campo, manualHref, exemploDaMarca, className }: FieldHelpProps) {
   const guia: GuiaCampo = GUIA_CAMPOS[campo]
+  const href = manualHref === false ? null : manualHref ?? linkDoManual(campo)
   const camada = CAMADAS_CONTEUDO.find((c) => c.id === guia.camada)
 
   return (
@@ -327,8 +336,9 @@ function FieldHelp({ campo, manualHref, exemploDaMarca, className }: FieldHelpPr
 
             <div className="mt-3 flex items-center justify-between gap-3 border-t border-border pt-3 text-xs">
               <span className="text-muted-foreground">Na dúvida: {camada?.pergunta.toLowerCase()}</span>
-              {manualHref && (
-                <a href={manualHref} className="shrink-0 font-semibold text-primary hover:underline">
+              {href && (
+                // Nova aba: quem está preenchendo não perde o que digitou.
+                <a href={href} target="_blank" rel="noopener noreferrer" className="shrink-0 font-semibold text-primary hover:underline">
                   Ver no manual →
                 </a>
               )}
