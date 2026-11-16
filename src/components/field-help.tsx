@@ -15,14 +15,19 @@ import { cn } from "../utils"
  * para qualquer marca.
  */
 
-export type CamadaConteudo = "marca" | "publico" | "momento" | "campanha" | "peca"
+export type CamadaConteudo = "marca" | "publico" | "momento" | "campanha" | "peca" | "produto"
 
+/**
+ * As cinco camadas e, ao lado, o produto: não é uma sexta camada na fila, é o
+ * "o quê" que a campanha aponta (por isso vem por último e com outro desenho).
+ */
 export const CAMADAS_CONTEUDO: { id: CamadaConteudo; nome: string; pergunta: string }[] = [
   { id: "marca", nome: "Marca", pergunta: "A frase vale para qualquer público e qualquer campanha?" },
   { id: "publico", nome: "Público", pergunta: "A frase vale para qualquer campanha deste público?" },
   { id: "momento", nome: "Momento", pergunta: "A frase vale para qualquer produto e qualquer público?" },
   { id: "campanha", nome: "Campanha", pergunta: "A frase vale para todas as peças desta campanha?" },
   { id: "peca", nome: "Peça", pergunta: "A frase vale só para esta peça?" },
+  { id: "produto", nome: "Produto", pergunta: "A frase vale em qualquer campanha, público e momento deste produto?" },
 ]
 
 export interface GuiaCampo {
@@ -137,6 +142,66 @@ export const GUIA_CAMPOS = {
     ruim: "Empresas maiores, evite “pra você”. É o primeiro uso, então incentive a usar.",
     porqueRuim: "Repete o Tom do público e o Contexto do preset: a IA dá peso dobrado.",
   },
+  produtoResumo: {
+    titulo: "O que é",
+    subtitulo: "O produto em uma ou duas frases",
+    camada: "produto",
+    vai: "O que é e que problema resolve. É a linha que a IA usa quando o catálogo é grande.",
+    naoVai: "Preço, taxa ou prazo (vão no Overview). Frase de venda ou chamada para ação (vai no Foco).",
+    bom: "Recurso da maquininha que deixa o cliente estrangeiro pagar na moeda dele, enquanto o lojista recebe em reais.",
+    ruim: "A solução perfeita para turbinar o seu negócio!",
+    porqueRuim: "Não diz o que o produto é, e a IA leva o tom de venda para todas as peças.",
+  },
+  produtoComoFunciona: {
+    titulo: "Como funciona",
+    subtitulo: "Recursos e funcionamento",
+    camada: "produto",
+    vai: "Um recurso ou fato por linha: o que faz, como faz, o que aceita.",
+    naoVai: "Benefício para o cliente (vai em Benefícios). Passo a passo (vai em Como usar).",
+    bom: "Identifica o cartão estrangeiro e oferece pagar na moeda de origem.",
+    ruim: "Mais agilidade e praticidade no seu dia a dia.",
+    porqueRuim: "É benefício genérico, não funcionamento. Não ajuda a IA a explicar o produto.",
+  },
+  produtoParaQuem: {
+    titulo: "Para quem e requisitos",
+    subtitulo: "Quem pode usar e o que precisa ter",
+    camada: "produto",
+    vai: "Quem pode usar, equipamento ou conta necessária, bandeiras e modalidades, quem mais usa.",
+    naoVai: "Preço, taxa, cashback, isenção e prazo: mudam por ação e vão no Overview da campanha.",
+    bom: "Cartões Visa e Mastercard, no débito e no crédito à vista.",
+    ruim: "Cashback de 1% pago no 2º dia útil.",
+    porqueRuim: "Se a condição muda, todas as campanhas seguintes levam o número velho.",
+  },
+  produtoComoUsar: {
+    titulo: "Como usar",
+    subtitulo: "O passo a passo para começar",
+    camada: "produto",
+    vai: "Um passo por linha, na ordem. Não precisa numerar: o sistema numera.",
+    naoVai: "Passos de uma ação específica, como participar de uma promoção (vão no Overview).",
+    bom: "Inicie a venda normalmente e informe o valor.",
+    ruim: "Baixe agora o app e aproveite!",
+    porqueRuim: "É chamada para ação, não um passo. O CTA de cada peça vem do briefing.",
+  },
+  produtoBeneficios: {
+    titulo: "Benefícios",
+    subtitulo: "O que o cliente ganha, como fato",
+    camada: "produto",
+    vai: "Um ganho concreto por linha, que vale em qualquer campanha.",
+    naoVai: "Frase de venda, promessa sem comprovação ou ganho de uma oferta com prazo.",
+    bom: "O cliente vê o valor na moeda que conhece antes de pagar.",
+    ruim: "Venda muito mais com o melhor conversor do mercado.",
+    porqueRuim: "Promessa sem comprovação e comparação: a marca não pode usar.",
+  },
+  produtoComoCitar: {
+    titulo: "Como citar",
+    subtitulo: "Nome certo e o que não dizer",
+    camada: "produto",
+    vai: "Grafia do nome e regras de menção que valem sempre que o produto aparece.",
+    naoVai: "Regras que valem para toda a marca (vão em Do’s e Don’ts).",
+    bom: "Pix é modalidade de pagamento, não produto da marca.",
+    ruim: "Nunca use gírias.",
+    porqueRuim: "Vale para toda a marca, não só para este produto.",
+  },
 } satisfies Record<string, GuiaCampo>
 
 export type CampoGuiaId = keyof typeof GUIA_CAMPOS
@@ -189,7 +254,9 @@ function FieldHelp({ campo, manualHref, className }: FieldHelpProps) {
                   key={c.id}
                   className={cn(
                     "flex-1 rounded py-1 text-center text-[11px] font-semibold",
-                    c.id === guia.camada ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                    c.id === guia.camada ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground",
+                    // Produto fica ao lado das camadas, não na fila: borda tracejada.
+                    c.id === "produto" && c.id !== guia.camada && "border border-dashed border-muted-foreground/40 bg-transparent"
                   )}
                 >
                   {c.nome}

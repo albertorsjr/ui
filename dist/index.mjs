@@ -381,7 +381,8 @@ var CAMADAS_CONTEUDO = [
   { id: "publico", nome: "P\xFAblico", pergunta: "A frase vale para qualquer campanha deste p\xFAblico?" },
   { id: "momento", nome: "Momento", pergunta: "A frase vale para qualquer produto e qualquer p\xFAblico?" },
   { id: "campanha", nome: "Campanha", pergunta: "A frase vale para todas as pe\xE7as desta campanha?" },
-  { id: "peca", nome: "Pe\xE7a", pergunta: "A frase vale s\xF3 para esta pe\xE7a?" }
+  { id: "peca", nome: "Pe\xE7a", pergunta: "A frase vale s\xF3 para esta pe\xE7a?" },
+  { id: "produto", nome: "Produto", pergunta: "A frase vale em qualquer campanha, p\xFAblico e momento deste produto?" }
 ];
 var GUIA_CAMPOS = {
   dosDonts: {
@@ -483,6 +484,66 @@ var GUIA_CAMPOS = {
     bom: "Situa\xE7\xE3o: evento na cidade. T\xEDtulo obrigat\xF3rio: \u201CChegou um cliente de fora?\u201D",
     ruim: "Empresas maiores, evite \u201Cpra voc\xEA\u201D. \xC9 o primeiro uso, ent\xE3o incentive a usar.",
     porqueRuim: "Repete o Tom do p\xFAblico e o Contexto do preset: a IA d\xE1 peso dobrado."
+  },
+  produtoResumo: {
+    titulo: "O que \xE9",
+    subtitulo: "O produto em uma ou duas frases",
+    camada: "produto",
+    vai: "O que \xE9 e que problema resolve. \xC9 a linha que a IA usa quando o cat\xE1logo \xE9 grande.",
+    naoVai: "Pre\xE7o, taxa ou prazo (v\xE3o no Overview). Frase de venda ou chamada para a\xE7\xE3o (vai no Foco).",
+    bom: "Recurso da maquininha que deixa o cliente estrangeiro pagar na moeda dele, enquanto o lojista recebe em reais.",
+    ruim: "A solu\xE7\xE3o perfeita para turbinar o seu neg\xF3cio!",
+    porqueRuim: "N\xE3o diz o que o produto \xE9, e a IA leva o tom de venda para todas as pe\xE7as."
+  },
+  produtoComoFunciona: {
+    titulo: "Como funciona",
+    subtitulo: "Recursos e funcionamento",
+    camada: "produto",
+    vai: "Um recurso ou fato por linha: o que faz, como faz, o que aceita.",
+    naoVai: "Benef\xEDcio para o cliente (vai em Benef\xEDcios). Passo a passo (vai em Como usar).",
+    bom: "Identifica o cart\xE3o estrangeiro e oferece pagar na moeda de origem.",
+    ruim: "Mais agilidade e praticidade no seu dia a dia.",
+    porqueRuim: "\xC9 benef\xEDcio gen\xE9rico, n\xE3o funcionamento. N\xE3o ajuda a IA a explicar o produto."
+  },
+  produtoParaQuem: {
+    titulo: "Para quem e requisitos",
+    subtitulo: "Quem pode usar e o que precisa ter",
+    camada: "produto",
+    vai: "Quem pode usar, equipamento ou conta necess\xE1ria, bandeiras e modalidades, quem mais usa.",
+    naoVai: "Pre\xE7o, taxa, cashback, isen\xE7\xE3o e prazo: mudam por a\xE7\xE3o e v\xE3o no Overview da campanha.",
+    bom: "Cart\xF5es Visa e Mastercard, no d\xE9bito e no cr\xE9dito \xE0 vista.",
+    ruim: "Cashback de 1% pago no 2\xBA dia \xFAtil.",
+    porqueRuim: "Se a condi\xE7\xE3o muda, todas as campanhas seguintes levam o n\xFAmero velho."
+  },
+  produtoComoUsar: {
+    titulo: "Como usar",
+    subtitulo: "O passo a passo para come\xE7ar",
+    camada: "produto",
+    vai: "Um passo por linha, na ordem. N\xE3o precisa numerar: o sistema numera.",
+    naoVai: "Passos de uma a\xE7\xE3o espec\xEDfica, como participar de uma promo\xE7\xE3o (v\xE3o no Overview).",
+    bom: "Inicie a venda normalmente e informe o valor.",
+    ruim: "Baixe agora o app e aproveite!",
+    porqueRuim: "\xC9 chamada para a\xE7\xE3o, n\xE3o um passo. O CTA de cada pe\xE7a vem do briefing."
+  },
+  produtoBeneficios: {
+    titulo: "Benef\xEDcios",
+    subtitulo: "O que o cliente ganha, como fato",
+    camada: "produto",
+    vai: "Um ganho concreto por linha, que vale em qualquer campanha.",
+    naoVai: "Frase de venda, promessa sem comprova\xE7\xE3o ou ganho de uma oferta com prazo.",
+    bom: "O cliente v\xEA o valor na moeda que conhece antes de pagar.",
+    ruim: "Venda muito mais com o melhor conversor do mercado.",
+    porqueRuim: "Promessa sem comprova\xE7\xE3o e compara\xE7\xE3o: a marca n\xE3o pode usar."
+  },
+  produtoComoCitar: {
+    titulo: "Como citar",
+    subtitulo: "Nome certo e o que n\xE3o dizer",
+    camada: "produto",
+    vai: "Grafia do nome e regras de men\xE7\xE3o que valem sempre que o produto aparece.",
+    naoVai: "Regras que valem para toda a marca (v\xE3o em Do\u2019s e Don\u2019ts).",
+    bom: "Pix \xE9 modalidade de pagamento, n\xE3o produto da marca.",
+    ruim: "Nunca use g\xEDrias.",
+    porqueRuim: "Vale para toda a marca, n\xE3o s\xF3 para este produto."
   }
 };
 function FieldHelp({ campo, manualHref, className }) {
@@ -526,7 +587,9 @@ function FieldHelp({ campo, manualHref, className }) {
             {
               className: cn(
                 "flex-1 rounded py-1 text-center text-[11px] font-semibold",
-                c.id === guia.camada ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                c.id === guia.camada ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground",
+                // Produto fica ao lado das camadas, não na fila: borda tracejada.
+                c.id === "produto" && c.id !== guia.camada && "border border-dashed border-muted-foreground/40 bg-transparent"
               ),
               children: c.nome
             },

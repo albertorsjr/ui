@@ -62,7 +62,11 @@ declare function DialogDescription({ className, ...props }: Dialog$1.Description
  * manual do Hub lerem da mesma fonte. Exemplos neutros de propósito: servem
  * para qualquer marca.
  */
-type CamadaConteudo = "marca" | "publico" | "momento" | "campanha" | "peca";
+type CamadaConteudo = "marca" | "publico" | "momento" | "campanha" | "peca" | "produto";
+/**
+ * As cinco camadas e, ao lado, o produto: não é uma sexta camada na fila, é o
+ * "o quê" que a campanha aponta (por isso vem por último e com outro desenho).
+ */
 declare const CAMADAS_CONTEUDO: {
     id: CamadaConteudo;
     nome: string;
@@ -173,6 +177,66 @@ declare const GUIA_CAMPOS: {
         titulo: string;
         subtitulo: string;
         camada: "peca";
+        vai: string;
+        naoVai: string;
+        bom: string;
+        ruim: string;
+        porqueRuim: string;
+    };
+    produtoResumo: {
+        titulo: string;
+        subtitulo: string;
+        camada: "produto";
+        vai: string;
+        naoVai: string;
+        bom: string;
+        ruim: string;
+        porqueRuim: string;
+    };
+    produtoComoFunciona: {
+        titulo: string;
+        subtitulo: string;
+        camada: "produto";
+        vai: string;
+        naoVai: string;
+        bom: string;
+        ruim: string;
+        porqueRuim: string;
+    };
+    produtoParaQuem: {
+        titulo: string;
+        subtitulo: string;
+        camada: "produto";
+        vai: string;
+        naoVai: string;
+        bom: string;
+        ruim: string;
+        porqueRuim: string;
+    };
+    produtoComoUsar: {
+        titulo: string;
+        subtitulo: string;
+        camada: "produto";
+        vai: string;
+        naoVai: string;
+        bom: string;
+        ruim: string;
+        porqueRuim: string;
+    };
+    produtoBeneficios: {
+        titulo: string;
+        subtitulo: string;
+        camada: "produto";
+        vai: string;
+        naoVai: string;
+        bom: string;
+        ruim: string;
+        porqueRuim: string;
+    };
+    produtoComoCitar: {
+        titulo: string;
+        subtitulo: string;
+        camada: "produto";
         vai: string;
         naoVai: string;
         bom: string;
