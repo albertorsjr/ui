@@ -37,6 +37,8 @@ export interface GuiaCampo {
   vai: string
   naoVai: string
   bom: string
+  /** Segundo exemplo bom, de outro tipo de produto (ex.: serviço × produto físico). */
+  bom2?: string
   ruim: string
   porqueRuim: string
 }
@@ -147,38 +149,42 @@ export const GUIA_CAMPOS = {
     subtitulo: "O produto em uma ou duas frases",
     camada: "produto",
     vai: "O que é e que problema resolve. É a linha que a IA usa quando o catálogo é grande.",
-    naoVai: "Preço, taxa ou prazo (vão no Overview). Frase de venda ou chamada para ação (vai no Foco).",
-    bom: "Recurso da maquininha que deixa o cliente estrangeiro pagar na moeda dele, enquanto o lojista recebe em reais.",
+    naoVai: "Preço, taxa ou prazo (vão em Condições comerciais ou no Overview). Frase de venda ou chamada para ação (vai no Foco).",
+    bom: "Aplicativo que agenda consultas e lembra o paciente no dia anterior.",
+    bom2: "Mochila impermeável para levar notebook de até 15 polegadas.",
     ruim: "A solução perfeita para turbinar o seu negócio!",
     porqueRuim: "Não diz o que o produto é, e a IA leva o tom de venda para todas as peças.",
   },
   produtoComoFunciona: {
-    titulo: "Como funciona",
-    subtitulo: "Recursos e funcionamento",
+    titulo: "O que tem e o que faz",
+    subtitulo: "Os fatos do produto",
     camada: "produto",
-    vai: "Um recurso ou fato por linha: o que faz, como faz, o que aceita.",
-    naoVai: "Benefício para o cliente (vai em Benefícios). Passo a passo (vai em Como usar).",
-    bom: "Identifica o cartão estrangeiro e oferece pagar na moeda de origem.",
-    ruim: "Mais agilidade e praticidade no seu dia a dia.",
-    porqueRuim: "É benefício genérico, não funcionamento. Não ajuda a IA a explicar o produto.",
+    vai: "Um fato por linha: o que o produto tem, o que faz e como opera. Especificações entram aqui (medidas, capacidade, material, acabamento, recursos).",
+    naoVai: "O que o cliente ganha (vai em Benefícios). O que o cliente faz (vai em Como usar). Preço e prazo (vão em Condições comerciais).",
+    bom: "Envia lembrete por SMS 24 horas antes da consulta.",
+    bom2: "Tecido impermeável, compartimento acolchoado, 25 litros.",
+    ruim: "Mais praticidade no seu dia a dia.",
+    porqueRuim: "É benefício genérico, não um fato do produto. Não ajuda a IA a explicar o que ele é.",
   },
   produtoParaQuem: {
     titulo: "Para quem e requisitos",
     subtitulo: "Quem pode usar e o que precisa ter",
     camada: "produto",
-    vai: "Quem pode usar, equipamento ou conta necessária, bandeiras e modalidades, quem mais usa.",
-    naoVai: "Preço, taxa, cashback, isenção e prazo: mudam por ação e vão no Overview da campanha.",
-    bom: "Cartões Visa e Mastercard, no débito e no crédito à vista.",
-    ruim: "Cashback de 1% pago no 2º dia útil.",
-    porqueRuim: "Se a condição muda, todas as campanhas seguintes levam o número velho.",
+    vai: "Quem pode usar, equipamento, conta ou instalação necessária, compatibilidade, quem mais usa.",
+    naoVai: "Preço, taxa, cashback, isenção e prazo: vão em Condições comerciais, se forem fixos, ou no Overview da campanha.",
+    bom: "Clínicas com agenda on-line ativa.",
+    bom2: "Notebooks de até 15 polegadas.",
+    ruim: "Frete grátis nas compras acima de R$ 200.",
+    porqueRuim: "É condição comercial. Aqui, a IA trata como requisito e repete em toda campanha.",
   },
   produtoComoUsar: {
     titulo: "Como usar",
     subtitulo: "O passo a passo para começar",
     camada: "produto",
-    vai: "Um passo por linha, na ordem. Não precisa numerar: o sistema numera.",
-    naoVai: "Passos de uma ação específica, como participar de uma promoção (vão no Overview).",
-    bom: "Inicie a venda normalmente e informe o valor.",
+    vai: "Um passo por linha, na ordem: o que o cliente faz. Não precisa numerar: o sistema numera.",
+    naoVai: "Passos de uma ação específica, como participar de uma promoção (vão no Overview). Ganho ou condição no meio do passo.",
+    bom: "Cadastre o paciente com o número do celular.",
+    bom2: "Abra o zíper lateral e encaixe o notebook no compartimento.",
     ruim: "Baixe agora o app e aproveite!",
     porqueRuim: "É chamada para ação, não um passo. O CTA de cada peça vem do briefing.",
   },
@@ -188,8 +194,9 @@ export const GUIA_CAMPOS = {
     camada: "produto",
     vai: "Um ganho concreto por linha, que vale em qualquer campanha.",
     naoVai: "Frase de venda, promessa sem comprovação ou ganho de uma oferta com prazo.",
-    bom: "O cliente vê o valor na moeda que conhece antes de pagar.",
-    ruim: "Venda muito mais com o melhor conversor do mercado.",
+    bom: "O paciente não esquece a consulta.",
+    bom2: "O notebook chega seco mesmo com chuva.",
+    ruim: "O melhor do mercado, sem comparação.",
     porqueRuim: "Promessa sem comprovação e comparação: a marca não pode usar.",
   },
   produtoComoCitar: {
@@ -198,9 +205,21 @@ export const GUIA_CAMPOS = {
     camada: "produto",
     vai: "Grafia do nome e regras de menção que valem sempre que o produto aparece.",
     naoVai: "Regras que valem para toda a marca (vão em Do’s e Don’ts).",
-    bom: "Pix é modalidade de pagamento, não produto da marca.",
+    bom: "“AgendaFácil”, tudo junto, com A e F maiúsculos.",
+    bom2: "Chamar de “mochila”, nunca de “bolsa”.",
     ruim: "Nunca use gírias.",
     porqueRuim: "Vale para toda a marca, não só para este produto.",
+  },
+  produtoCondicoes: {
+    titulo: "Condições comerciais",
+    subtitulo: "Preço e regras que valem em toda campanha",
+    camada: "produto",
+    vai: "Preço, mensalidade, taxa, cashback, prazo ou gratuidade que valem sempre. Com a opção marcada, o Briefing avisa quando a campanha trouxer outra condição.",
+    naoVai: "Oferta de uma campanha só: vai no Overview. Se for uma exceção, registre como condição do preset ao aparecer o aviso.",
+    bom: "Mensalidade de R$ 29,90, sem taxa de adesão.",
+    bom2: "Garantia de 2 anos contra defeito de fabricação.",
+    ruim: "Só neste fim de semana: 20% de desconto.",
+    porqueRuim: "É oferta com prazo. Como condição fixa, toda campanha seguinte daria aviso de divergência.",
   },
 } satisfies Record<string, GuiaCampo>
 
@@ -210,10 +229,12 @@ export interface FieldHelpProps {
   campo: CampoGuiaId
   /** Link "Ver no manual". Sem ele, o link não aparece. */
   manualHref?: string
+  /** Exemplo real da própria marca (ex.: outro produto já validado). Aparece antes dos exemplos neutros. */
+  exemploDaMarca?: { texto: string; origem: string }
   className?: string
 }
 
-function FieldHelp({ campo, manualHref, className }: FieldHelpProps) {
+function FieldHelp({ campo, manualHref, exemploDaMarca, className }: FieldHelpProps) {
   const guia: GuiaCampo = GUIA_CAMPOS[campo]
   const camada = CAMADAS_CONTEUDO.find((c) => c.id === guia.camada)
 
@@ -282,9 +303,20 @@ function FieldHelp({ campo, manualHref, className }: FieldHelpProps) {
             </div>
 
             <div className="mt-3 flex flex-col gap-2 text-xs leading-relaxed">
+              {exemploDaMarca && (
+                <div className="rounded-lg border border-primary/30 bg-primary/5 px-3 py-2">
+                  <div className="text-[10px] font-bold uppercase tracking-wide text-primary">
+                    Exemplo da marca · {exemploDaMarca.origem}
+                  </div>
+                  <p className="whitespace-pre-line">{exemploDaMarca.texto}</p>
+                </div>
+              )}
               <div className="rounded-lg border border-teal-200 bg-teal-50 px-3 py-2 dark:border-teal-900 dark:bg-teal-950/40">
-                <div className="text-[10px] font-bold uppercase tracking-wide text-teal-800 dark:text-teal-400">Bom exemplo</div>
+                <div className="text-[10px] font-bold uppercase tracking-wide text-teal-800 dark:text-teal-400">
+                  {guia.bom2 ? "Bons exemplos" : "Bom exemplo"}
+                </div>
                 <p>“{guia.bom}”</p>
+                {guia.bom2 && <p className="mt-1">“{guia.bom2}”</p>}
               </div>
               <div className="rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 dark:border-orange-900 dark:bg-orange-950/40">
                 <div className="text-[10px] font-bold uppercase tracking-wide text-orange-800 dark:text-orange-400">Confunde a IA</div>
