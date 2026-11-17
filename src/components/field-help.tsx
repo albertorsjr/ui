@@ -225,6 +225,158 @@ export const GUIA_CAMPOS = {
 
 export type CampoGuiaId = keyof typeof GUIA_CAMPOS
 
+/**
+ * "Vai aqui / Não vai aqui" em itens, para o manual do Hub (checklist com ✓ e ✕).
+ * O balão segue com o texto corrido de GUIA_CAMPOS, que cabe melhor no espaço curto.
+ */
+export const CHECKLIST_CAMPOS: Record<CampoGuiaId, { vai: string[]; naoVai: string[] }> = {
+  dosDonts: {
+    vai: [
+      "Grafia do nome da marca, palavras e expressões proibidas para todos",
+      "Promessas que a marca nunca faz",
+      "Exceções da própria regra, quando existirem",
+    ],
+    naoVai: ["Tratamento ou vocabulário de um público só (vai no Tom dele)", "Regra que vale só para uma campanha"],
+  },
+  perfil: {
+    vai: [
+      "Fatos sobre o negócio e sobre quem lê a mensagem",
+      "Situações reais da rotina, uma por linha",
+      "Num público geral, só situações que valem para todo ramo",
+    ],
+    naoVai: [
+      "Argumento de produto ou regra de campanha",
+      "Vocabulário e tratamento (vão no Tom)",
+      "Pesquisa, estimativas e notas internas (vão em Docs)",
+    ],
+  },
+  tom: {
+    vai: [
+      "Registro: consultivo, direto, leve…",
+      "Tratamento: “você” ou “o negócio”",
+      "Palavras preferidas e evitadas por este público",
+    ],
+    naoVai: ["Frase pronta de campanha (vai no Foco)", "Proibição de toda a marca (vai em Do’s e Don’ts)"],
+  },
+  gatilho: {
+    vai: ["A vontade ou o problema do público", "Uma ou duas frases, que valem em qualquer campanha"],
+    naoVai: ["Lista de produtos ou de ações (“produto → ação”)", "Meta de campanha (vai no Objetivo)"],
+  },
+  contexto: {
+    vai: [
+      "Em que momento o cliente está: nunca usou, usa pouco, vai cancelar",
+      "O que a peça faz e o que evita nesse momento",
+      "A direção da chamada para ação",
+    ],
+    naoVai: ["Fatos de um produto (vêm do Brand System)", "Tom ou vocabulário de um público (vai no Brand System)"],
+  },
+  argumento: {
+    vai: [
+      "O papel da peça no momento, de um jeito que sirva para qualquer produto",
+      "Como ele se liga ao Argumento anterior",
+      "Um Argumento para quem já é cliente e outro para quem ainda não é, quando o caminho muda",
+    ],
+    naoVai: [
+      "Texto pronto do argumento",
+      "Dado ou benefício de um produto (vem do Brand System)",
+      "Fato de uma campanha (vai no Overview)",
+    ],
+  },
+  condicoes: {
+    vai: [
+      "Condição diferente da condição fixa de um produto, nesta régua",
+      "Exceção aceita no aviso de divergência (“vale só para esta campanha”)",
+    ],
+    naoVai: [
+      "Condição que vale sempre (vai em Condições comerciais do produto)",
+      "Regra permanente de um público (vai no Tom) ou da marca (vai em Do’s e Don’ts)",
+    ],
+  },
+  overview: {
+    vai: [
+      "O fato novo: lançamento, disponibilidade, mudança",
+      "Promoção com prazo e a mecânica dela",
+      "Restrições que só existem nesta campanha",
+    ],
+    naoVai: [
+      "Descrição e condições fixas do produto (vêm do Brand System)",
+      "Quem é o público (vem do Brand System)",
+      "O momento, como Primeiro uso (vem do preset)",
+    ],
+  },
+  objetivo: {
+    vai: ["A mudança esperada no comportamento do cliente: de onde para onde", "Como medir se deu certo", "Uma ou duas frases"],
+    naoVai: ["A descrição do produto ou a estratégia do Overview", "Lista de fases"],
+  },
+  foco: {
+    vai: [
+      "A ideia e o ângulo desta peça",
+      "A situação da rotina escolhida",
+      "A frase que precisa sair igual, marcada como obrigatória",
+    ],
+    naoVai: [
+      "Quem é o público e o vocabulário dele (já chegam sozinhos)",
+      "O momento: Contexto e Argumento (já chegam do preset)",
+      "Situação de um ramo num envio para o público geral",
+    ],
+  },
+  produtoResumo: {
+    vai: ["O que o produto é", "Que problema resolve", "Uma ou duas frases"],
+    naoVai: [
+      "Preço, taxa ou prazo (vão em Condições comerciais ou no Overview)",
+      "Frase de venda ou chamada para ação (vai no Foco)",
+    ],
+  },
+  produtoComoFunciona: {
+    vai: [
+      "Um fato por linha: o que tem, o que faz, como opera",
+      "Especificações: medidas, capacidade, material, acabamento, recursos",
+    ],
+    naoVai: [
+      "O que o cliente ganha (vai em Benefícios)",
+      "O que o cliente faz (vai em Como usar)",
+      "Preço e prazo (vão em Condições comerciais)",
+    ],
+  },
+  produtoParaQuem: {
+    vai: [
+      "Quem pode usar",
+      "Equipamento, conta ou instalação necessária",
+      "Compatibilidade, voltagem, dimensões, superfície indicada",
+    ],
+    naoVai: [
+      "Preço, taxa, cashback, isenção e prazo (vão em Condições comerciais)",
+      "O público de uma campanha (vem do Público-alvo)",
+    ],
+  },
+  produtoComoUsar: {
+    vai: ["Um passo por linha, na ordem", "O que o cliente faz para começar", "Sem numerar: o sistema numera"],
+    naoVai: [
+      "Chamada para ação (“Baixe agora”)",
+      "Passos para participar de uma promoção (vão no Overview)",
+      "Ganho ou condição no meio de um passo",
+    ],
+  },
+  produtoBeneficios: {
+    vai: ["Um ganho concreto por linha", "Ganho que vale em qualquer campanha"],
+    naoVai: ["Frase de venda ou promessa sem comprovação", "Ganho de uma oferta com prazo (vai no Overview)"],
+  },
+  produtoComoCitar: {
+    vai: ["Grafia do nome", "Como chamar e como não chamar o produto", "Regras de menção que valem sempre que ele aparece"],
+    naoVai: ["Regra que vale para toda a marca (vai em Do’s e Don’ts)"],
+  },
+  produtoCondicoes: {
+    vai: [
+      "Preço, mensalidade, taxa, cashback, garantia ou gratuidade que valem sempre",
+      "Marque “condições fixas” para elas entrarem na descrição e o Briefing avisar quando a campanha trouxer outra",
+    ],
+    naoVai: [
+      "Oferta com prazo de uma campanha (vai no Overview)",
+      "Exceção de uma régua (vira condição do preset pelo aviso de divergência)",
+    ],
+  },
+}
+
 /** Página do manual no Hub. Cada campo tem âncora com o próprio id (ex.: #overview). */
 export const MANUAL_PREENCHIMENTO_URL = "https://saicreativesystem.vercel.app/manual"
 
